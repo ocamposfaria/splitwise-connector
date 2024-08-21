@@ -19,7 +19,7 @@ This project is a Python application that uses FastAPI to act as a proxy, facili
 
 ## Prerequisites
 
-- **Python 3.8 or higher** and libraries in `requirements.txt`.
+- **Python 3.8 or higher** and libraries in `requirements.txt`, or a Docker container that runs this environment.
 - **AWS account** and user with read and write permissions on S3 - IAM recommended.
 - **Splitwise account** with developer permissions.
 
