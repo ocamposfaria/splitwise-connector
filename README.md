@@ -1,5 +1,11 @@
 # My Splitwise Connector
 
+<style>
+  a {
+    text-decoration: none;
+  }
+</style>
+
 <p align="center">
   <a href="https://www.python.org/" target="_blank">
     <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python" alt="Python">
