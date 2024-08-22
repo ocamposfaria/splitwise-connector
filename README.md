@@ -3,12 +3,14 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/FastAPI-0.70.0+-brightgreen?logo=fastapi" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Delta_Lake-0.7.0+-blue?logo=delta" alt="Delta Lake">
+  <img src="https://img.shields.io/badge/FastAPI-0.112.0+-brightgreen?logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Polars-1.5.0+-blue?logo=polars" alt="Polars">
   <img src="https://img.shields.io/badge/AWS%20S3-Storage-orange?logo=amazons3" alt="AWS S3">
-  <img src="https://img.shields.io/badge/DuckDB-Storage-yellow?logo=duckdb" alt="DuckDB">
-  <img src="https://img.shields.io/badge/dbt-0.19.0+-orange?logo=dbt" alt="dbt">
+  <img src="https://img.shields.io/badge/DuckDB-1.0.0-yellow?logo=duckdb" alt="DuckDB">
+  <img src="https://img.shields.io/badge/dbt-1.8.5+-orange?logo=dbt" alt="dbt">
+
 </p>
+
 
 ## Overview
 
