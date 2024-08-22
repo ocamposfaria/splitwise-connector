@@ -39,7 +39,7 @@ This project is a Python application that uses FastAPI to act as a proxy, facili
 
 1. Clone the repository:
     ```
-    git clone https://github.com/usuario/splitwise-connector.git
+    git clone https://github.com/ocamposfaria/splitwise-connector.git
     ```
 
 2. Install project dependencies:
@@ -63,6 +63,8 @@ This project is a Python application that uses FastAPI to act as a proxy, facili
     ```
     uvicorn main:app --reload
     ```
+
+5. Access the URL to execute requests: http://127.0.0.1:8000/docs#/
 
 ## Contributions
 Feel free to contribute to the project. To do this, fork the repository and send a pull request with your improvements.
