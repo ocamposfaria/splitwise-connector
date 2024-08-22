@@ -1,12 +1,24 @@
 # My Splitwise Connector
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/FastAPI-0.70.0+-brightgreen?logo=fastapi" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Delta_Lake-0.7.0+-blue?logo=delta" alt="Delta Lake">
-  <img src="https://img.shields.io/badge/AWS%20S3-Storage-orange?logo=amazons3" alt="AWS S3">
-  <img src="https://img.shields.io/badge/DuckDB-Storage-yellow?logo=duckdb" alt="DuckDB">
-  <img src="https://img.shields.io/badge/dbt-0.19.0+-orange?logo=dbt" alt="dbt">
+  <a href="https://www.python.org/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python" alt="Python">
+  </a>
+  <a href="https://fastapi.tiangolo.com/" target="_blank">
+    <img src="https://img.shields.io/badge/FastAPI-0.70.0+-brightgreen?logo=fastapi" alt="FastAPI">
+  </a>
+  <a href="https://delta.io/" target="_blank">
+    <img src="https://img.shields.io/badge/Delta_Lake-0.7.0+-blue?logo=delta" alt="Delta Lake">
+  </a>
+  <a href="https://aws.amazon.com/s3/" target="_blank">
+    <img src="https://img.shields.io/badge/AWS%20S3-Storage-orange?logo=amazons3" alt="AWS S3">
+  </a>
+  <a href="https://duckdb.org/" target="_blank">
+    <img src="https://img.shields.io/badge/DuckDB-Integration-yellow?logo=duckdb" alt="DuckDB">
+  </a>
+  <a href="https://www.getdbt.com/" target="_blank">
+    <img src="https://img.shields.io/badge/dbt-0.19.0+-orange?logo=dbt" alt="dbt">
+  </a>
 </p>
 
 ## Overview
