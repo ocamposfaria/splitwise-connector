@@ -1,5 +1,14 @@
 # My Splitwise Connector
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-0.70.0+-brightgreen?logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Delta_Lake-0.7.0+-blue?logo=delta" alt="Delta Lake">
+  <img src="https://img.shields.io/badge/AWS%20S3-Storage-orange?logo=amazons3" alt="AWS S3">
+  <img src="https://img.shields.io/badge/DuckDB-Storage-yellow?logo=duckdb" alt="DuckDB">
+  <img src="https://img.shields.io/badge/dbt-0.19.0+-orange?logo=dbt" alt="dbt">
+</p>
+
 ## Overview
 
 This project is a Python application that uses FastAPI to act as a proxy, facilitating the consumption of information from [Splitwise](https://splitwise.com). The obtained data is stored in its raw format as Delta Lake tables in an S3 bucket on AWS. Furthermore, the project has connectors to create and store tables in a DuckDB database. A dbt (Data Build Tool) project is also integrated with DuckDB to perform transformations and analysis on the stored data.
