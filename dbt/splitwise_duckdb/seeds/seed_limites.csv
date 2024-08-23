@@ -1,0 +1,32 @@
+category,cost,cost_extra_week,cost_juau,cost_lana,version_month_from,version_month_to,detail
+alimentação,600,0,0,0,2022-08,2023-03,""
+apenas joão,0,0,0,0,2022-08,2023-03,""
+apenas lana,0,0,0,0,2022-08,2023-03,""
+assinaturas,150,0,0,0,2022-08,2023-03,""
+contas,2315,0,0,0,2022-08,2023-03,""
+mercado,1274,0,500,774,2022-08,2023-01,""
+outros,100,0,0,0,2022-08,2023-03,""
+transporte,250,0,0,0,2022-08,2023-03,""
+padaria,100,0,0,0,2022-08,2023-03,""
+feira,400,0,0,0,2022-08,2023-03,""
+mercado,1065,0,500,565,2023-02,2023-02,VR da lana veio diferente
+mercado,1303,0,0,0,2023-03,2023-03,VR da lana veio diferente
+alimentação,700,0,0,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+apenas joão,0,0,100,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+apenas lana,0,0,0,100,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+assinaturas,100,0,0,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+contas,2500,0,0,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+mercado,1600,0,0,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+outros,300,0,0,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+transporte,350,0,0,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+conveniência,350,0,0,0,2023-04,2023-12,joão foi efetivado na mobly e agora temos carro
+alimentação,700,787.5,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+apenas joão,0,0,100,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+apenas lana,0,0,0,100,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+assinaturas,110,110,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+contas,2550,2645.625,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+mercado,1600,1800,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+outros,390,390,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+transporte,400,450,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+conveniência,500,562.5,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"
+bem-estar,350,450,0,0,2024-01,2200-01,"aumento salário do joão com a sicoob. adição da categoria bem-estar, novo campo cost_extra_week para meses com 5 semanas"

@@ -6,6 +6,7 @@ from core.schema import OtherUsers
 from core.splitwise import Splitwise
 from core.duckdb import DuckDB
 from core.polars import Polars
+from core.gsheets import Sheets
 
 
 app = FastAPI(title="Splitwise Connector REST API")
@@ -13,9 +14,9 @@ app = FastAPI(title="Splitwise Connector REST API")
 splitwise_client = Splitwise()
 duckdb_client = DuckDB()
 polars_client = Polars()
+gsheets_client = Sheets()
 
 # Splitwise
-
 @app.get("/get_expense", tags=["Splitwise"])
 def get_expense(expense_id: int):
     try:
@@ -167,7 +168,6 @@ def update_expense(
         raise HTTPException(status_code=500, detail=str(e))
 
 # DuckDB
-
 @app.post("/create_database_if_not_exists", tags=["DuckDB"])
 def create_database_if_not_exists():
     try:
@@ -201,7 +201,6 @@ def duckdb_ingestion(schema_name, table_name):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Polars S3
-
 @app.post("/s3_expenses_ingestion", tags=["Polars S3"])
 def s3_expenses_ingestion(mode='append', limit=20):
     try:
@@ -214,6 +213,23 @@ def s3_expenses_ingestion(mode='append', limit=20):
 def s3_groups_ingestion(mode='append'):
     try:
         response = polars_client.s3_groups_ingestion(mode=mode)
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Google Sheets
+@app.post("/save_sheet_as_seed", tags=["Google Sheets"])
+def save_sheet_as_seed(workbook_name, sheet_name):
+    try:
+        response = gsheets_client.save_sheet_as_seed(workbook_name=workbook_name, sheet_name=sheet_name)
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/save_all_my_sheets_as_seeds", tags=["Google Sheets"])
+def save_all_my_sheets_as_seeds():
+    try:
+        response = gsheets_client.save_all_my_sheets_as_seeds()
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
