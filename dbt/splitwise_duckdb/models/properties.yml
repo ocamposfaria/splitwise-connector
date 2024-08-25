@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: splitwise 
+  # if schema not defined, then schema = name
+    tables:
+      - name: expenses
+      - name: groups
