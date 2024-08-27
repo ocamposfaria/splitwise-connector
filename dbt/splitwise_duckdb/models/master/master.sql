@@ -65,10 +65,9 @@ SELECT
 	description,
 	cost,
 	CASE 
-		WHEN month IS NULL THEN substring(month, 1, 7)
+		WHEN month IS NULL THEN substring(created_at, 1, 7)
 		ELSE month
-	END AS MONTH,
-	created_at,
+	END AS month,
 	user_id,
 	user_name,
 	-- estou colocando o tratamento do grupo da lana aqui pra ser aplicado após o unnest
@@ -123,4 +122,51 @@ WHERE 1=1
 	) OR (created_at > '2024-08-21'))
 	-- remove ganhos (antigos inputs)
 	AND category NOT LIKE '%ganhos%'
-ORDER BY updated_at DESC 
+	and month is null
+
+UNION ALL 
+
+-- ganhos
+
+SELECT
+
+	null as group_id,
+	null as group_name,
+	null as expense_id,
+	gp.category as category,
+	null as subcategory,
+	gp.description as description,
+	null as cost,
+	gp.month as month,
+	null as user_id,
+	gp.user_name as user_name,
+	gp.granular_cost as user_cost,
+	null as user_percentage,
+	null as is_payer,
+	null as details,
+	null as repeat_interval,
+	null as currency_code,
+	null as category_id,
+	null as friendship_id,
+	null as expense_bundle_id,
+	null as repeats,
+	null as email_reminder,
+	null as email_reminder_in_advance,
+	null as next_repeat,
+	null as comments_count,
+	null as payment,
+	null as transaction_confirmed,
+	null as repayments,
+	null as date,
+	null as created_at,
+	null as created_by,
+	null as updated_at,
+	null as updated_by,
+	null as deleted_at,
+	null as deleted_by,
+	null as receipt,
+	null as comments
+
+FROM {{ref('gains_and_percentages')}} gp
+
+ORDER BY updated_at DESC
