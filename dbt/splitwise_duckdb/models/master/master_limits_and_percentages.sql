@@ -23,6 +23,6 @@ SELECT
 	END AS user_percentage
 FROM
 	{{ref('limits')}} l 
-LEFT JOIN summed_up_percentages sup ON l.month = sup.MONTH AND l.user_name = sup.user_name
+LEFT JOIN summed_up_percentages sup ON l.month = sup.month AND l.user_name = sup.user_name
 WHERE l.month >= '2022-08'
 ORDER BY 1, 2
