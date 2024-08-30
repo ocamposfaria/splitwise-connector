@@ -2,9 +2,14 @@ import os
 import pathlib
 import polars as pl
 import gspread
+import smtplib
 from oauth2client.service_account import ServiceAccountCredentials
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-class Sheets:
+from core.schema import EmailSchema
+
+class Google:
     def __init__(self):
         self.scope = ['https://spreadsheets.google.com/feeds', 
                       'https://www.googleapis.com/auth/drive']
@@ -25,6 +30,8 @@ class Sheets:
         self.credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             credentials_dict, self.scope)
         self.client = gspread.authorize(self.credentials)
+        self.sender_email = os.getenv('GOOGLE_EMAIL_SENDER')
+        self.sender_password = os.getenv('GOOGLE_PASSWORD_SENDER')
 
 
     def save_sheet_as_seed(self, workbook_name, sheet_name):
@@ -51,3 +58,24 @@ class Sheets:
             status[sheet] = self.save_sheet_as_seed('Suporte p orçamento', sheet)
         
         return status
+
+    def send_email(self, email: EmailSchema):
+        sender_email = self.sender_email
+        sender_password = self.sender_password
+        receiver_email = email.email
+
+        msg = MIMEMultipart()
+        msg["From"] = sender_email
+        msg["To"] = receiver_email
+        msg["Subject"] = email.subject
+
+        msg.attach(MIMEText(email.message, "plain"))
+
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, receiver_email, msg.as_string())
+            server.close()
+        except Exception as e:
+            return f"Erro ao enviar o e-mail: {e}"

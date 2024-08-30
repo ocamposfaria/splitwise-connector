@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 import polars as pl
 
@@ -9,6 +9,12 @@ class OtherUsers(BaseModel):
     email: Optional[str]
     paid_share: Optional[float]
     owed_share: Optional[float]
+
+
+class EmailSchema(BaseModel):
+    email: EmailStr
+    subject: str
+    message: str
 
 
 expenses_schema_polars = pl.Schema([

@@ -122,7 +122,6 @@ WHERE 1=1
 	) OR (created_at > '2024-08-21'))
 	-- remove ganhos (antigos inputs)
 	AND category NOT LIKE '%ganhos%'
-	and month is null
 
 UNION ALL 
 

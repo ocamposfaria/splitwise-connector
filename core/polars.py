@@ -29,12 +29,11 @@ class Polars():
             except Exception as e:
                 return str(e)
 
-    def s3_expenses_ingestion(self, mode, limit=20):
+    def s3_expenses_ingestion(self, mode, limit=20, updated_after=None, updated_before=None, dated_after=None, dated_before=None):
         try:
-            data = splitwise_client.get_expenses(limit=limit)
+            data = splitwise_client.get_expenses(limit=limit, updated_after=updated_after, updated_before=updated_before, dated_after=dated_after, dated_before=dated_before)
             df = pl.DataFrame(data['expenses'], schema=expenses_schema_polars)
-            self._ingest_s3_table(df=df, schema_name='splitwise', table_name='expenses', mode=mode)
-            return 'Concluído'
+            return self._ingest_s3_table(df=df, schema_name='splitwise', table_name='expenses', mode=mode)
         
         except Exception as e:
             return str(e)

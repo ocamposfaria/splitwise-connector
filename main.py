@@ -1,20 +1,19 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 
 from typing import Optional
 
-from core.schema import OtherUsers
+from core.schema import OtherUsers, EmailSchema
 from core.splitwise import Splitwise
 from core.duckdb import DuckDB
 from core.polars import Polars
-from core.gsheets import Sheets
-
+from core.google import Google
 
 app = FastAPI(title="Splitwise Connector REST API")
 
 splitwise_client = Splitwise()
 duckdb_client = DuckDB()
 polars_client = Polars()
-gsheets_client = Sheets()
+google_client = Google()
 
 # Splitwise
 @app.get("/get_expense", tags=["Splitwise"])
@@ -202,9 +201,9 @@ def duckdb_ingestion(schema_name, table_name):
 
 # Polars S3
 @app.post("/s3_expenses_ingestion", tags=["Polars S3"])
-def s3_expenses_ingestion(mode='append', limit=20):
+def s3_expenses_ingestion(mode='append', limit=20, updated_after=None, updated_before=None, dated_after=None, dated_before=None):
     try:
-        response = polars_client.s3_expenses_ingestion(mode=mode, limit=limit)
+        response = polars_client.s3_expenses_ingestion(mode=mode, limit=limit, updated_after=updated_after, updated_before=updated_before, dated_after=dated_after, dated_before=dated_before)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -217,19 +216,25 @@ def s3_groups_ingestion(mode='append'):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Google Sheets
-@app.post("/save_sheet_as_seed", tags=["Google Sheets"])
+# Google 
+@app.post("/save_sheet_as_seed", tags=["Google"])
 def save_sheet_as_seed(workbook_name, sheet_name):
     try:
-        response = gsheets_client.save_sheet_as_seed(workbook_name=workbook_name, sheet_name=sheet_name)
+        response = google_client.save_sheet_as_seed(workbook_name=workbook_name, sheet_name=sheet_name)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.post("/save_all_my_sheets_as_seeds", tags=["Google Sheets"])
+@app.post("/save_listed_sheets_as_seeds", tags=["Google"])
 def save_all_my_sheets_as_seeds():
     try:
-        response = gsheets_client.save_all_my_sheets_as_seeds()
+        response = google_client.save_all_my_sheets_as_seeds()
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/send_email/", tags=["Google"])
+async def send_email_endpoint(email: EmailSchema, background_tasks: BackgroundTasks):
+    background_tasks.add_task(google_client.send_email, email)
+    return {"message": "E-mail enviado com sucesso!"}

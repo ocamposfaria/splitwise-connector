@@ -37,20 +37,6 @@ class DuckDB:
         except Exception as e:
             return str(e)
 
-    def query_duckdb(self, sql_query):
-        try:
-            connection = duckdb.connect(self.db_path, read_only=True)
-
-            result_df = connection.execute(sql_query).fetchdf()
-
-            connection.close()
-            
-            result = json.loads(result_df.to_json())
-
-            return result
-        except Exception as e:
-            return str(e)
-
     def duckdb_ingestion(self, schema_name, table_name):
         try:
             connection = duckdb.connect(self.db_path)
@@ -77,3 +63,9 @@ class DuckDB:
         
         except Exception as e:
             return str(e)
+        
+    def query_duckdb(self, sql_query: str):
+
+        con = duckdb.connect(self.db_path)
+
+        return con.execute(sql_query).df()
