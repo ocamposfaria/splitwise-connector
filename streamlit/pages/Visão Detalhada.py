@@ -1,5 +1,11 @@
-import streamlit as st
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
 from core.duckdb import DuckDB
+
+import streamlit as st
 from datetime import datetime
 from pydantic import BaseModel, Field
 import plotly.express as px
