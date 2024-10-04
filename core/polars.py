@@ -43,7 +43,7 @@ class Polars():
             result = self._ingest_s3_table(df=df, schema_name='splitwise', table_name='expenses', mode=mode)
             
             if result["status_code"] == 200:
-                result["record_count"] = df.count()
+                result["record_count"] = df.height
             
             return result
         except Exception as e:

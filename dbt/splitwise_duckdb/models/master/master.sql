@@ -2,16 +2,23 @@ WITH fundamental_changes AS (
 	
 	SELECT
 		e.group_id,
-		g.name AS group_name,
+		CASE 
+			WHEN group_id = '39217365' and e.created_at between '2024-09-28' and '2024-10-04' THEN 'Viagem amigos (chapada) 2024'
+			WHEN e.id IN ('3289649901') THEN 'Viagem amigos (chapada) 2024'
+			ELSE g.name 
+		END AS group_name,
 		e.id AS expense_id,
 		-- categoria própria com base em colchetes
 		CASE
-			WHEN e.group_id = '35336773' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas joão'
-			WHEN e.group_id = '40055224' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas lana'
-			WHEN e.group_id in ('33823062', '34137144') THEN regexp_split_to_array(replace(regexp_split_to_array(e.description, '] ')[1], '[', ''), ' - ')[1] 
-			ELSE null
+		    WHEN e.group_id = '35336773' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas joão'
+		    WHEN e.group_id = '40055224' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas lana'
+		    ELSE 
+		        CASE 
+		            WHEN array_length(regexp_split_to_array(e.description, '] ')) = 2 
+		            	THEN replace(regexp_split_to_array(e.description, '] ')[1], '[', '') 
+		            ELSE NULL 
+		        END
 		END AS category,
-		regexp_split_to_array(replace(regexp_split_to_array(e.description, '] ')[1], '[', ''), ' - ')[2] AS subcategory,
 		CASE 
 			WHEN e.description LIKE '%]%' AND e.description LIKE '%[%' THEN regexp_split_to_array(e.description, '] ')[2]
 			ELSE e.description
@@ -62,8 +69,16 @@ SELECT
 	group_id,
 	group_name,
 	expense_id,
-	category,
-	subcategory,
+    CASE 
+        WHEN array_length(regexp_split_to_array(category, ' - ')) = 2 
+        	THEN regexp_split_to_array(category, ' - ')[1]
+        ELSE category
+	END AS category,
+    CASE 
+        WHEN array_length(regexp_split_to_array(category, ' - ')) = 2 
+        	THEN regexp_split_to_array(category, ' - ')[2]
+        ELSE NULL 
+	END AS subcategory,
 	description,
 	cost,
 	CASE 
@@ -115,16 +130,9 @@ WHERE 1=1
 	AND description <> 'QUITE'
 	AND deleted_at IS NULL
 	-- não quero registros meus vindo do grupo da lana
-	AND (group_id <> '40055224' OR user_id = '20401164') 
-	-- só quero os grupos daqui de casa ou os criados a partir de hoje
-	AND (group_id IN (
-		'33823062', -- nossa residência
-		'34137144', -- vr (coisa antiga)
-		'40055224', -- apenas lana
-		'35336773', -- just me 
-	) OR (created_at > '2024-08-21'))
+	AND ((group_id = '40055224' AND user_id = '20401164') OR (group_id <> '40055224'))
 	-- remove ganhos (antigos inputs)
-	AND category NOT LIKE '%ganhos%'
+	AND (category IS NULL OR category NOT LIKE '%ganhos%')
 
 UNION ALL 
 
