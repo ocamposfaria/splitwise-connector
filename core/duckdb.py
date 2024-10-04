@@ -2,6 +2,7 @@ import duckdb
 import json
 import os
 import subprocess
+from http import HTTPStatus
 
 class DuckDB:
     def __init__(self):
@@ -12,15 +13,15 @@ class DuckDB:
         try:
             connection = duckdb.connect(self.db_path)
             connection.close()
-            return 'Quack'
+            return {'status_code': 200, 'message': 'Database created successfully.'}
         except Exception as e:
-            return str(e)
+            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error creating database: {str(e)}'}
 
     def create_s3_access(self):
         try:
             connection = duckdb.connect(self.db_path, read_only=True)
 
-            response = connection.execute(f"""
+            connection.execute(f"""
                 CREATE OR REPLACE PERSISTENT SECRET secret (
                     TYPE S3,
                     KEY_ID '{os.getenv('AWS_ACCESS_KEY_ID')}',
@@ -29,14 +30,14 @@ class DuckDB:
                 );
                 INSTALL delta;
                 LOAD delta;
-                """).fetchall()
-
+                """)
+            
             connection.close()
 
-            return {'Status': True, 'response': response}
+            return {'status_code': 200, 'message': 'S3 access created successfully.'}
         
         except Exception as e:
-            return str(e)
+            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error creating S3 access: {str(e)}'}
 
     def duckdb_ingestion(self, schema_name, table_name):
         try:
@@ -44,61 +45,60 @@ class DuckDB:
 
             result_df = connection.execute(
                 f"""
-                CREATE SCHEMA IF NOT EXISTS splitwise;
+                CREATE SCHEMA IF NOT EXISTS {schema_name};
                 CREATE OR REPLACE TABLE {schema_name}.{table_name} AS 
                 (WITH ranked_records AS (
                     SELECT
                         *,
                         ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) AS rn
                     FROM
-                        delta_scan("s3://general-purpose-data/{schema_name}/{table_name}")
+                        delta_scan('s3://general-purpose-data/{schema_name}/{table_name}')
                 )
                 SELECT * EXCLUDE(rn) FROM ranked_records WHERE rn = 1 ORDER BY updated_at DESC);
                 """
             ).fetchdf()
 
             connection.close()
-            
-            result = json.loads(result_df.to_json())
 
-            return result
+            result = json.loads(result_df.to_json())
+            return {'status_code': 200, 'message': 'Data ingestion successful.', 'data': result}
         
         except Exception as e:
-            return str(e)
+            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error in data ingestion: {str(e)}'}
         
     def query_duckdb(self, sql_query: str):
-
-        con = duckdb.connect(self.db_path)
-
-        return con.execute(sql_query).df()
-
-
+        try:
+            con = duckdb.connect(self.db_path)
+            result_df = con.execute(sql_query).df()
+            return {'status_code': 200, 'message': 'Query executed successfully.', 'data': result_df}
+        except Exception as e:
+            return {'status_code': HTTPStatus.BAD_REQUEST, 'message': f'Error executing query: {str(e)}'}
+    
     def export_table_to_csv(self, schema_name: str, table_name: str):
-        """Exporta uma tabela do DuckDB para um arquivo CSV."""
         try:
             output_file = f'exports/{table_name}.csv'
             connection = duckdb.connect(self.db_path)
             connection.execute(f"COPY {schema_name}.{table_name} TO '{output_file}' WITH (FORMAT 'csv', HEADER TRUE)")
             connection.close()
 
-            return f'Tabela {schema_name}.{table_name} exportada para {output_file} com sucesso!'
+            return {'status_code': 200, 'message': f'Table {schema_name}.{table_name} exported to {output_file} successfully.'}
         
         except Exception as e:
-            return str(e)
+            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error exporting table: {str(e)}'}
         
     def run_dbt_command(self, command='dbt build'):
-        """Executa o comando dbt na pasta dbt/splitwise_duckdb/."""
         try:
-            os.chdir('dbt/splitwise_duckdb/')  
+            os.chdir('dbt/splitwise_duckdb/')
             
             result = subprocess.run(command.split(), capture_output=True, text=True)
 
-            return {
-                'stdout': result.stdout.splitlines(),
-                'stderr': result.stderr.splitlines(),
-                'returncode': result.returncode
-            }
+            if result.returncode == 0:
+                return {'status_code': 200, 'message': 'DBT command executed successfully.', 'stdout': result.stdout.splitlines()}
+            else:
+                return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': 'DBT command failed.', 'stderr': result.stderr.splitlines()}
+        
         except Exception as e:
-            return str(e)
+            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error running DBT command: {str(e)}'}
+        
         finally:
-            os.chdir('../../') 
+            os.chdir('../../')

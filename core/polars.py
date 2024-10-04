@@ -3,6 +3,7 @@ import polars as pl
 import os 
 from core.schema import expenses_schema_polars, users_schema_polars
 from core.splitwise import Splitwise
+from icecream import ic
 
 load_dotenv()
 
@@ -37,11 +38,13 @@ class Polars():
 
     def s3_expenses_ingestion(self, mode='append', limit=20, updated_after=None, updated_before=None, dated_after=None, dated_before=None):
         try:
-            data = splitwise_client.get_expenses(limit=limit, updated_after=updated_after, updated_before=updated_before, dated_after=dated_after, dated_before=dated_before)
+            data = splitwise_client.get_expenses(limit=limit, updated_after=updated_after, updated_before=updated_before, dated_after=dated_after, dated_before=dated_before)['data']
             df = pl.DataFrame(data['expenses'], schema=expenses_schema_polars)
             result = self._ingest_s3_table(df=df, schema_name='splitwise', table_name='expenses', mode=mode)
+            
             if result["status_code"] == 200:
-                result["record_count"] = df.count()  # Add record count to success message
+                result["record_count"] = df.count()
+            
             return result
         except Exception as e:
             return {
@@ -51,7 +54,7 @@ class Polars():
 
     def s3_groups_ingestion(self, mode='append'):
         try:
-            data = splitwise_client.get_groups()
+            data = splitwise_client.get_groups()['data']
             df = pl.DataFrame(data['groups'], schema=users_schema_polars)
             return self._ingest_s3_table(df=df, schema_name='splitwise', table_name='groups', mode=mode)
         except Exception as e:

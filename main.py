@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
+from datetime import datetime, timedelta
 
 from typing import Optional
 
@@ -19,7 +20,7 @@ google_client = Google()
 @app.get("/get_expense", tags=["Splitwise"])
 def get_expense(expense_id: int):
     try:
-        response = splitwise_client.get_expense(expense_id)
+        response = splitwise_client.get_expense(expense_id)['data']
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -61,7 +62,7 @@ def delete_expense(expense_id: int):
 @app.get("/get_groups", tags=["Splitwise"])
 def get_groups():
     try:
-        response = splitwise_client.get_groups()
+        response = splitwise_client.get_groups()['data']
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -77,7 +78,7 @@ def get_group(group_id: int):
 @app.get("/get_current_user", tags=["Splitwise"])
 def get_current_user():
     try:
-        response = splitwise_client.get_current_user()
+        response = splitwise_client.get_current_user()['data']
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -85,7 +86,7 @@ def get_current_user():
 @app.get("/get_friends", tags=["Splitwise"])
 def get_friends():
     try:
-        response = splitwise_client.get_friends()
+        response = splitwise_client.get_friends()['data']
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -281,54 +282,86 @@ async def update_expenses_month(request: UpdateExpensesRequest):
     return responses
 
 @app.post("/refresh_splitwise/", tags=["Batch"])
-async def refresh_splitwise(updated_after):
+async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')):
     """
     Atualiza Excel com dados do Splitwise.
     """
 
     errors = [] 
+    successes = []
 
-    response = polars_client.s3_expenses_ingestion(mode=None, limit=None, updated_after=updated_after, updated_before=None, dated_after=None, dated_before=None)
-    
-    if response.status != 200:
-        errors.append("Falha na ingestão de despesas no S3.")
+    response = polars_client.s3_expenses_ingestion(mode='append', limit=1000, updated_after=updated_after, updated_before=None, dated_after=None, dated_before=None)
+    if response['status_code'] != 200:
+        error_message = response.get('message', 'Erro desconhecido.')
+        errors.append(f"Falha na ingestão de despesas no S3: {error_message}")
+    else:
+        successes.append(response)
 
     if not errors:
-        response = polars_client.s3_groups_ingestion(mode='replace')
-        if response.status != 200:
-            errors.append("Falha na ingestão de grupos no S3.")
+        response = polars_client.s3_groups_ingestion(mode='overwrite')
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha na ingestão de grupos no S3: {error_message}")
+        else:
+            successes.append(response)
     
     if not errors:
         response = duckdb_client.duckdb_ingestion(schema_name='splitwise', table_name='expenses')
-        if response.status != 200:
-            errors.append("Falha na ingestão de despesas no DuckDB.")
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha na ingestão de despesas no DuckDB: {error_message}")
+        else:
+            successes.append(response)
     
     if not errors:
         response = duckdb_client.duckdb_ingestion(schema_name='splitwise', table_name='groups')
-        if response.status != 200:
-            errors.append("Falha na ingestão de grupos no DuckDB.")
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha na ingestão de grupos no DuckDB: {error_message}")
+        else:
+            successes.append(response)
+
+    if not errors:
+        response = duckdb_client.run_dbt_command(command='dbt build')
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha na execução do `dbt build`: {error_message}")
+        else:
+            successes.append(response)
     
     if not errors:
         response = duckdb_client.export_table_to_csv(schema_name='main', table_name='master')
-        if response.status != 200:
-            errors.append("Falha ao exportar a tabela 'master' para CSV.")
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha ao exportar a tabela 'master' para CSV: {error_message}")
+        else:
+            successes.append(response)
 
     if not errors:
         response = duckdb_client.export_table_to_csv(schema_name='main', table_name='month')
-        if response.status != 200:
-            errors.append("Falha ao exportar a tabela 'month' para CSV.")
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha ao exportar a tabela 'month' para CSV: {error_message}")
+        else:
+            successes.append(response)
     
     if not errors:
         response = duckdb_client.export_table_to_csv(schema_name='main', table_name='master_limits_and_percentages')
-        if response.status != 200:
-            errors.append("Falha ao exportar a tabela 'master_limits_and_percentages' para CSV.")
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha ao exportar a tabela 'master_limits_and_percentages' para CSV: {error_message}")
+        else:
+            successes.append(response)
     
     if not errors:
         response = duckdb_client.export_table_to_csv(schema_name='main', table_name='chart_limits_and_results')
-        if response.status != 200:
-            errors.append("Falha ao exportar a tabela 'chart_limits_and_results' para CSV.")
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha ao exportar a tabela 'chart_limits_and_results' para CSV: {error_message}")
+        else:
+            successes.append(response)
     
     if not errors:
-        return {"status": "all true"}
+        return {"status": 200, "message": "all true", "success_responses": successes}
     else:
-        return {"status": "falhas", "detalhes": errors}
+        return {"status": 500, "message": errors}

@@ -2,6 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 from typing import Optional, Dict, Any
+from icecream import ic
 
 load_dotenv()
 
@@ -22,17 +23,35 @@ class Splitwise:
             params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         
         url = f"{self._base_url}/{endpoint}"
-        response = requests.request(
-            method,
-            url,
-            headers=self._headers,
-            json=data,
-            params=params
-        )
-        response.raise_for_status()
-        return response.json()
+        
+        try:
+            response = requests.request(
+                method,
+                url,
+                headers=self._headers,
+                json=data,
+                params=params
+            )
+            response.raise_for_status()
 
-    
+            json_response = response.json()
+            
+            return {
+                "status_code": response.status_code,
+                "message": "Success",
+                "data": json_response
+            }
+        except requests.exceptions.HTTPError as http_err:
+            return {
+                "status_code": response.status_code,
+                "message": f"HTTP error occurred: {http_err}"
+            }
+        except Exception as err:
+            return {
+                "status_code": 500,
+                "message": f"Other error occurred: {err}"
+            }
+
     def get_expense(self, expense_id):
         return self._make_request(f"get_expense/{expense_id}")
     
@@ -59,7 +78,6 @@ class Splitwise:
         }
         
         params = {k: v for k, v in params.items() if v is not None}
-        
         return self._make_request("get_expenses/", params=params)
     
     def get_groups(self):

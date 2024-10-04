@@ -33,30 +33,33 @@ class Google:
         self.sender_email = os.getenv('GOOGLE_EMAIL_SENDER')
         self.sender_password = os.getenv('GOOGLE_PASSWORD_SENDER')
 
-
     def save_sheet_as_seed(self, workbook_name, sheet_name):
-        output_folder = pathlib.Path("dbt/splitwise_duckdb/seeds/")
-        os.makedirs(output_folder, exist_ok=True)
+        try:
+            output_folder = pathlib.Path("dbt/splitwise_duckdb/seeds/")
+            os.makedirs(output_folder, exist_ok=True)
 
-        sheet = self.client.open(workbook_name).worksheet(sheet_name)
-        data = sheet.get_all_values()
-        df = pl.DataFrame(data[1:], schema=data[0], orient="row")
+            sheet = self.client.open(workbook_name).worksheet(sheet_name)
+            data = sheet.get_all_values()
+            df = pl.DataFrame(data[1:], schema=data[0], orient="row")
 
-        # this is used to replace commas with periods as thousands separators
-        df = df.select([ 
-            pl.col(column).str.replace(",", ".") for column in df.columns
-        ])
+            # Replace commas with periods as thousands separators
+            df = df.select([ 
+                pl.col(column).str.replace(",", ".") for column in df.columns
+            ])
 
-        output_path = output_folder / f"seed_{sheet_name.lower().replace(' ', '_')}.csv"
-        df.write_csv(output_path, separator=',')
-        
-        return 'Concluído'
+            output_path = output_folder / f"seed_{sheet_name.lower().replace(' ', '_')}.csv"
+            df.write_csv(output_path, separator=',')
+            
+            return {"message": f"Planilha {sheet_name} salva com sucesso.", "status_code": 200}
+
+        except Exception as e:
+            return {"message": f"Erro ao salvar a planilha {sheet_name}: {str(e)}", "status_code": 500}
 
     def save_all_my_sheets_as_seeds(self):
         status = {}
         for sheet in ['Ganhos', 'Limites', 'Presentes', 'Gastos futuros']:
-            status[sheet] = self.save_sheet_as_seed('Suporte p orçamento', sheet)
-        
+            result = self.save_sheet_as_seed('Suporte p orçamento', sheet)
+            status[sheet] = result
         return status
 
     def send_email(self, email: EmailSchema):
@@ -77,5 +80,6 @@ class Google:
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, receiver_email, msg.as_string())
             server.close()
+            return {"message": "E-mail enviado com sucesso.", "status_code": 200}
         except Exception as e:
-            return f"Erro ao enviar o e-mail: {e}"
+            return {"message": f"Erro ao enviar o e-mail: {str(e)}", "status_code": 500}
