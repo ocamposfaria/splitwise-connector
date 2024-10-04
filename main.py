@@ -282,7 +282,7 @@ async def update_expenses_month(request: UpdateExpensesRequest):
     return responses
 
 @app.post("/refresh_splitwise/", tags=["Batch"])
-async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')):
+async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks=2)).strftime('%Y-%m-%dT%H:%M:%SZ')):
     """
     Atualiza Excel com dados do Splitwise.
     """
@@ -305,6 +305,9 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(days=
         else:
             successes.append(response)
     
+    # FIXME 
+    # Incluir extração do Google Sheets!
+
     if not errors:
         response = duckdb_client.duckdb_ingestion(schema_name='splitwise', table_name='expenses')
         if response['status_code'] != 200:
