@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 from pydantic import BaseModel, EmailStr
 
 import polars as pl
@@ -15,6 +15,10 @@ class EmailSchema(BaseModel):
     email: EmailStr
     subject: str
     message: str
+
+
+class UpdateExpensesRequest(BaseModel):
+    expenses: Dict[int, str]
 
 
 expenses_schema_polars = pl.Schema([

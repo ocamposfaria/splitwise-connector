@@ -1,17 +1,18 @@
 import duckdb
 import json
-import os 
+import os
+import subprocess
 
 class DuckDB:
     def __init__(self):
-        self.db_path = 'database/myduckdb'
+        self.db_path = 'database/myduckdb.db'
         self.create_database_if_not_exists()
 
     def create_database_if_not_exists(self):
         try:
             connection = duckdb.connect(self.db_path)
             connection.close()
-            return 'Quack 🦆'
+            return 'Quack'
         except Exception as e:
             return str(e)
 
@@ -20,7 +21,7 @@ class DuckDB:
             connection = duckdb.connect(self.db_path, read_only=True)
 
             response = connection.execute(f"""
-                CREATE PERSISTENT SECRET secret (
+                CREATE OR REPLACE PERSISTENT SECRET secret (
                     TYPE S3,
                     KEY_ID '{os.getenv('AWS_ACCESS_KEY_ID')}',
                     SECRET '{os.getenv('AWS_SECRET_ACCESS_KEY')}',
@@ -43,6 +44,7 @@ class DuckDB:
 
             result_df = connection.execute(
                 f"""
+                CREATE SCHEMA IF NOT EXISTS splitwise;
                 CREATE OR REPLACE TABLE {schema_name}.{table_name} AS 
                 (WITH ranked_records AS (
                     SELECT
@@ -69,3 +71,34 @@ class DuckDB:
         con = duckdb.connect(self.db_path)
 
         return con.execute(sql_query).df()
+
+
+    def export_table_to_csv(self, schema_name: str, table_name: str):
+        """Exporta uma tabela do DuckDB para um arquivo CSV."""
+        try:
+            output_file = f'exports/{table_name}.csv'
+            connection = duckdb.connect(self.db_path)
+            connection.execute(f"COPY {schema_name}.{table_name} TO '{output_file}' WITH (FORMAT 'csv', HEADER TRUE)")
+            connection.close()
+
+            return f'Tabela {schema_name}.{table_name} exportada para {output_file} com sucesso!'
+        
+        except Exception as e:
+            return str(e)
+        
+    def run_dbt_command(self, command='dbt build'):
+        """Executa o comando dbt na pasta dbt/splitwise_duckdb/."""
+        try:
+            os.chdir('dbt/splitwise_duckdb/')  
+            
+            result = subprocess.run(command.split(), capture_output=True, text=True)
+
+            return {
+                'stdout': result.stdout.splitlines(),
+                'stderr': result.stderr.splitlines(),
+                'returncode': result.returncode
+            }
+        except Exception as e:
+            return str(e)
+        finally:
+            os.chdir('../../') 

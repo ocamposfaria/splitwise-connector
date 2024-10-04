@@ -127,8 +127,8 @@ class Splitwise:
     def update_expense(
         self,
         expense_id,
-        cost,
-        description,
+        cost = None,
+        description = None,
         details = None,
         date = None,
         repeat_interval = None,

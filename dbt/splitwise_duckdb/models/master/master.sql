@@ -1,59 +1,61 @@
-WITH fundamental_changes AS (SELECT
-	e.group_id,
-	g.name AS group_name,
-	e.id AS expense_id,
-	-- categoria própria com base em colchetes
-	CASE
-		WHEN e.group_id = '35336773' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas joão'
-		WHEN e.group_id = '40055224' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas lana'
-		WHEN e.group_id = '33823062' THEN regexp_split_to_array(replace(regexp_split_to_array(e.description, '] ')[1], '[', ''), ' - ')[1] 
-		ELSE null
-	END AS category,
-	regexp_split_to_array(replace(regexp_split_to_array(e.description, '] ')[1], '[', ''), ' - ')[2] AS subcategory,
-	CASE 
-		WHEN e.description LIKE '%]%' AND e.description LIKE '%[%' THEN regexp_split_to_array(e.description, '] ')[2]
-		ELSE e.description
-	END AS description,
-	cast(e.cost as float) as cost,
-	-- mês próprio com base nos detalhes separados por quebra de linha
-	regexp_split_to_array(e.details, '\n ')[1] AS month,
-	-- explodindo a tabela por user_id e expense_id
-	unnest(users).user_id AS user_id,
-	unnest(users).user.first_name AS user_name,
-	cast(unnest(users).owed_share AS float) AS user_cost,
-	cast(unnest(users).owed_share AS float)/cast(cost AS float) AS user_percentage,
-	CASE 
-		WHEN cast(unnest(users).paid_share AS float) > 0 THEN True
-		WHEN cast(unnest(users).paid_share AS float) = 0 THEN False
-		ELSE 'error'
-	END AS is_payer,
-	regexp_split_to_array(e.details, '\n ')[2] AS details,
-	e.repeat_interval,
-	e.currency_code,
-	e.category_id,
-	e.friendship_id,
-	e.expense_bundle_id,
-	e.repeats,
-	e.email_reminder,
-	e.email_reminder_in_advance,
-	e.next_repeat,
-	e.comments_count,
-	e.payment,
-	e.transaction_confirmed,
-	e.repayments,
-	e.date,
-	e.created_at,
-	e.created_by,
-	e.updated_at,
-	e.updated_by,
-	e.deleted_at,
-	e.deleted_by,
-	e.receipt,
-	e.comments
-FROM
-	{{ source('splitwise', 'expenses') }} e
-FULL OUTER JOIN {{ source('splitwise', 'groups') }} g ON
-	e.group_id = g.id
+WITH fundamental_changes AS (
+	
+	SELECT
+		e.group_id,
+		g.name AS group_name,
+		e.id AS expense_id,
+		-- categoria própria com base em colchetes
+		CASE
+			WHEN e.group_id = '35336773' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas joão'
+			WHEN e.group_id = '40055224' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas lana'
+			WHEN e.group_id in ('33823062', '34137144') THEN regexp_split_to_array(replace(regexp_split_to_array(e.description, '] ')[1], '[', ''), ' - ')[1] 
+			ELSE null
+		END AS category,
+		regexp_split_to_array(replace(regexp_split_to_array(e.description, '] ')[1], '[', ''), ' - ')[2] AS subcategory,
+		CASE 
+			WHEN e.description LIKE '%]%' AND e.description LIKE '%[%' THEN regexp_split_to_array(e.description, '] ')[2]
+			ELSE e.description
+		END AS description,
+		cast(e.cost as float) as cost,
+		-- mês próprio com base nos detalhes separados por quebra de linha
+		regexp_split_to_array(e.details, '\n ')[1] AS month,
+		-- explodindo a tabela por user_id e expense_id
+		unnest(users).user_id AS user_id,
+		unnest(users).user.first_name AS user_name,
+		cast(unnest(users).owed_share AS float) AS user_cost,
+		cast(unnest(users).owed_share AS float)/cast(cost AS float) AS user_percentage,
+		CASE 
+			WHEN cast(unnest(users).paid_share AS float) > 0 THEN True
+			WHEN cast(unnest(users).paid_share AS float) = 0 THEN False
+			ELSE 'error'
+		END AS is_payer,
+		regexp_split_to_array(e.details, '\n ')[2] AS details,
+		e.repeat_interval,
+		e.currency_code,
+		e.category_id,
+		e.friendship_id,
+		e.expense_bundle_id,
+		e.repeats,
+		e.email_reminder,
+		e.email_reminder_in_advance,
+		e.next_repeat,
+		e.comments_count,
+		e.payment,
+		e.transaction_confirmed,
+		e.repayments,
+		e.date,
+		e.created_at,
+		e.created_by,
+		e.updated_at,
+		e.updated_by,
+		e.deleted_at,
+		e.deleted_by,
+		e.receipt,
+		e.comments
+	FROM
+		{{ source('splitwise', 'expenses') }} e
+	FULL OUTER JOIN {{ source('splitwise', 'groups') }} g ON
+		e.group_id = g.id
 )
 
 SELECT
@@ -117,6 +119,7 @@ WHERE 1=1
 	-- só quero os grupos daqui de casa ou os criados a partir de hoje
 	AND (group_id IN (
 		'33823062', -- nossa residência
+		'34137144', -- vr (coisa antiga)
 		'40055224', -- apenas lana
 		'35336773', -- just me 
 	) OR (created_at > '2024-08-21'))
@@ -139,7 +142,7 @@ SELECT
 	gp.month as month,
 	null as user_id,
 	gp.user_name as user_name,
-	gp.granular_cost as user_cost,
+	- gp.granular_cost as user_cost,
 	null as user_percentage,
 	null as is_payer,
 	null as details,
