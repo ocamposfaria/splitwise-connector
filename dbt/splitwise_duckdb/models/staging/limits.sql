@@ -43,7 +43,7 @@ LEFT JOIN five_weeks_months fwm ON ym.month = fwm.five_weeks_month
 ORDER BY 1, 2
 )
 
--- unpivot de users
+-- unpivot de users (atual)
 
 SELECT
 	month,
@@ -52,6 +52,7 @@ SELECT
 	cost + cost_juau AS user_cost
 FROM limits_expanded
 WHERE category <> 'apenas lana'
+	AND NOT (month <= '2023-02' and category = 'mercado')
 
 UNION ALL
 
@@ -62,6 +63,31 @@ SELECT
 	cost + cost_lana AS user_cost
 FROM limits_expanded
 WHERE category <> 'apenas joão'
+	AND NOT (month <= '2023-02' and category = 'mercado')
+
+UNION ALL 
+
+-- unpivot de users (para mercado, legado)
+
+SELECT
+	month,
+	category,
+	'João' AS user_name,
+	cost_juau AS user_cost
+FROM limits_expanded
+WHERE category <> 'apenas lana'
+	AND (month <= '2023-02' and category = 'mercado')
+
+UNION ALL
+
+SELECT
+	month,
+	category,
+	'Hallana' AS user_name,
+	cost_lana AS user_cost
+FROM limits_expanded
+WHERE category <> 'apenas joão'
+	AND (month <= '2023-02' and category = 'mercado')
 
 UNION ALL 
 

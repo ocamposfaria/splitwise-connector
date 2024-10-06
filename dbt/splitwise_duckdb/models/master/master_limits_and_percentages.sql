@@ -14,11 +14,11 @@ SELECT
 	l.category,
 	l.user_name,
 	CASE 
-		WHEN l.category = 'apenas lana' OR l.category = 'apenas joão' THEN l.user_cost 
+		WHEN l.category = 'apenas lana' OR l.category = 'apenas joão' OR category = 'presentes' OR (category = 'mercado' and l.month <= '2023-02') THEN l.user_cost 
 		ELSE l.user_cost * sup.user_percentage
 	END AS user_cost,
 	CASE 
-		WHEN l.category = 'apenas lana' OR l.category = 'apenas joão' THEN 1 
+		WHEN l.category = 'apenas lana' OR l.category = 'apenas joão' OR category = 'presentes' OR (category = 'mercado' and l.month <= '2023-02') THEN 1 
 		ELSE sup.user_percentage
 	END AS user_percentage
 FROM

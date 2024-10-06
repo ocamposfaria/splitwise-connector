@@ -1,10 +1,9 @@
 WITH fundamental_changes AS (
-	
 	SELECT
 		e.group_id,
 		CASE 
 			WHEN group_id = '39217365' and e.created_at between '2024-09-28' and '2024-10-04' THEN 'Viagem amigos (chapada) 2024'
-			WHEN e.id IN ('3289649901') THEN 'Viagem amigos (chapada) 2024'
+			WHEN e.id IN ('3289649901', '3416288099', '3415928093', '3416309318') THEN 'Viagem amigos (chapada) 2024'
 			ELSE g.name 
 		END AS group_name,
 		e.id AS expense_id,
@@ -63,9 +62,9 @@ WITH fundamental_changes AS (
 		{{ source('splitwise', 'expenses') }} e
 	FULL OUTER JOIN {{ source('splitwise', 'groups') }} g ON
 		e.group_id = g.id
-)
+),
 
-SELECT
+final_changes AS (SELECT
 	group_id,
 	group_name,
 	expense_id,
@@ -87,15 +86,25 @@ SELECT
 	END AS month,
 	user_id,
 	user_name,
-	-- estou colocando o tratamento do grupo da lana aqui pra ser aplicado após o unnest
 	CASE
+	-- estou colocando o tratamento do grupo da lana aqui pra ser aplicado após o unnest
 		WHEN group_id = '40055224' AND user_id = '20401164' THEN cost
 		WHEN group_id = '40055224' AND user_id = '27512092' THEN 0
+	-- também estou colocando o tratamento do grupo do VR aqui (legado)
+		WHEN group_id = '34137144' AND user_id = '20401164' AND repayments[1].from = '27512092' THEN cost
+		WHEN group_id = '34137144' AND user_id = '27512092' AND repayments[1].from = '20401164' THEN cost
+		WHEN group_id = '34137144' AND user_id = '20401164' AND repayments[1].from = '20401164' THEN 0
+		WHEN group_id = '34137144' AND user_id = '27512092' AND repayments[1].from = '27512092' THEN 0
 		ELSE user_cost
 	END AS user_cost,
+	-- refletindo também nos percentuais
 	CASE
 		WHEN group_id = '40055224' AND user_id = '20401164' THEN 1
 		WHEN group_id = '40055224' AND user_id = '27512092' THEN 0
+		WHEN group_id = '34137144' AND user_id = '20401164' AND repayments[1].from = '27512092' THEN 1
+		WHEN group_id = '34137144' AND user_id = '27512092' AND repayments[1].from = '20401164' THEN 1
+		WHEN group_id = '34137144' AND user_id = '20401164' AND repayments[1].from = '20401164' THEN 0
+		WHEN group_id = '34137144' AND user_id = '27512092' AND repayments[1].from = '27512092' THEN 0
 		ELSE user_percentage
 	END AS user_percentage,
 	is_payer,
@@ -132,7 +141,11 @@ WHERE 1=1
 	-- não quero registros meus vindo do grupo da lana
 	AND ((group_id = '40055224' AND user_id = '20401164') OR (group_id <> '40055224'))
 	-- remove ganhos (antigos inputs)
-	AND (category IS NULL OR category NOT LIKE '%ganhos%')
+	AND (category IS NULL OR category NOT LIKE '%ganhos%'))
+
+SELECT * FROM final_changes
+-- removendo meses protótipos
+WHERE month NOT IN ('2022-06', '2022-07')
 
 UNION ALL 
 

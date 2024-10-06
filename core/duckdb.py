@@ -13,7 +13,7 @@ class DuckDB:
         try:
             connection = duckdb.connect(self.db_path)
             connection.close()
-            return {'status_code': 200, 'message': 'Database created successfully.'}
+            return {'status_code': 200, 'message': 'Database created SUCCESSFULLY.'}
         except Exception as e:
             return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error creating database: {str(e)}'}
 
@@ -34,7 +34,7 @@ class DuckDB:
             
             connection.close()
 
-            return {'status_code': 200, 'message': 'S3 access created successfully.'}
+            return {'status_code': 200, 'message': 'S3 access created SUCCESSFULLY.'}
         
         except Exception as e:
             return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error creating S3 access: {str(e)}'}
@@ -70,7 +70,7 @@ class DuckDB:
         try:
             con = duckdb.connect(self.db_path)
             result_df = con.execute(sql_query).df()
-            return {'status_code': 200, 'message': 'Query executed successfully.', 'data': result_df}
+            return {'status_code': 200, 'message': 'Query executed SUCCESSFULLY.', 'data': result_df}
         except Exception as e:
             return {'status_code': HTTPStatus.BAD_REQUEST, 'message': f'Error executing query: {str(e)}'}
     
@@ -81,7 +81,7 @@ class DuckDB:
             connection.execute(f"COPY {schema_name}.{table_name} TO '{output_file}' WITH (FORMAT 'csv', HEADER TRUE)")
             connection.close()
 
-            return {'status_code': 200, 'message': f'Table {schema_name}.{table_name} exported to {output_file} successfully.'}
+            return {'status_code': 200, 'message': f'Table {schema_name}.{table_name} exported to {output_file} SUCCESSFULLY.'}
         
         except Exception as e:
             return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error exporting table: {str(e)}'}
@@ -93,12 +93,12 @@ class DuckDB:
             result = subprocess.run(command.split(), capture_output=True, text=True)
 
             if result.returncode == 0:
-                return {'status_code': 200, 'message': 'DBT command executed successfully.', 'stdout': result.stdout.splitlines()}
+                return {'status_code': 200, 'message': 'dbt command executed SUCCESSFULLY.', 'stdout': result.stdout.splitlines()}
             else:
-                return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': 'DBT command failed.', 'stderr': result.stderr.splitlines()}
+                return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': 'dbt command FAILED.', 'stderr': result.stderr.splitlines()}
         
         except Exception as e:
-            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error running DBT command: {str(e)}'}
+            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error running dbt command: {str(e)}'}
         
         finally:
             os.chdir('../../')
