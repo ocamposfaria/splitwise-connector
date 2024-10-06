@@ -21,7 +21,7 @@ five_weeks_months AS (
 SELECT '2024-01' AS five_weeks_month UNION ALL
 SELECT '2024-04' UNION ALL
 SELECT '2024-07' UNION ALL
-SELECT '2024-10' 
+SELECT '2024-09' 
 ),
 
 limits_expanded AS (
