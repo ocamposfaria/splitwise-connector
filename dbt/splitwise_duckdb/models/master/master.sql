@@ -24,7 +24,7 @@ WITH fundamental_changes AS (
 		END AS description,
 		cast(e.cost as float) as cost,
 		-- mês próprio com base nos detalhes separados por quebra de linha
-		regexp_split_to_array(e.details, '\n ')[1] AS month,
+		regexp_split_to_array(if(e.details = '', NULL, e.details), '\n ')[1] AS month,
 		-- explodindo a tabela por user_id e expense_id
 		unnest(users).user_id AS user_id,
 		unnest(users).user.first_name AS user_name,

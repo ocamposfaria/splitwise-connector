@@ -1,5 +1,5 @@
 -- presente e futuro estimados nossa residência
-WITH averages AS (
+WITH tmp_averages AS (
 SELECT
 	cluster,
 	category,
@@ -18,9 +18,9 @@ WHERE
 	
 GROUP BY ALL),
 
-year_months AS (SELECT * FROM {{('month')}} WHERE month >= strftime('%Y-%m', date_trunc('month', current_date)))
+year_months AS (SELECT * FROM {{('month')}} WHERE month >= strftime('%Y-%m', date_trunc('month', current_date))),
 
-SELECT 	
+future_spends AS (SELECT 	
 	a.cluster,
     a.category,
     ym.month,
@@ -30,15 +30,13 @@ SELECT
     a.user_name,
     a.cost,
     a.cost * mlp.user_percentage as user_cost
-FROM averages a
+FROM tmp_averages a
     JOIN {{('master_limits_and_percentages')}} mlp ON mlp.user_name = a.user_name and a.category = mlp.category
     JOIN year_months ym ON mlp.month = ym.month
-WHERE mlp.month > strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')
+WHERE mlp.month > strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')),
 
-UNION ALL
-
--- passado 
-SELECT
+-- passado com ganhos extra
+past_spends AS (SELECT
 	cluster,
     category,
     month,
@@ -52,12 +50,28 @@ FROM
 	{{('overall_costs')}}
 WHERE
 	cluster IN ('nossa residência', 'viagens', 'ganhos', 'compras')
-	and month <= strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')
+	and month <= strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')),
 
-UNION ALL
+-- passado sem ganhos extra
+past_spends_wo_extra AS (SELECT
+	cluster,
+    category,
+    month,
+    substring(month, 1, 4) as year,
+    'realizado' as time_split,
+    user_id,
+    user_name,
+    cost,
+    user_cost
+FROM
+	{{('overall_costs')}}
+WHERE
+	cluster IN ('nossa residência', 'viagens', 'ganhos', 'compras')
+    and category NOT LIKE '%ganhos extra%'
+	and month <= strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')),
 
--- ganhos presente e futuro
-SELECT
+-- ganhos com ganhos extra presente e futuro
+gains AS (SELECT
 	'ganhos' as cluster,
 	category,
 	month,
@@ -70,8 +84,105 @@ SELECT
 FROM {{('overall_costs')}}
 WHERE
 	cluster in ('ganhos')
-	and month > strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')
-	
--- viagens presente e futuro
-	
--- compras presente e futuro
+	and month > strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')),
+
+-- ganhos sem ganhos extra presente e futuro
+gains_wo_extra AS (SELECT
+	'ganhos' as cluster,
+	category,
+	month,
+	substring(month, 1, 4) as year,
+	'previsto' as time_split,
+	user_id,
+	user_name,
+	cost,
+	user_cost
+FROM {{('overall_costs')}}
+WHERE
+	cluster in ('ganhos')
+    and category NOT LIKE ('%ganhos extra%')
+	and month > strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')),
+
+planned_for_future AS (
+    SELECT
+        "group" as cluster,
+        category,
+        month,
+        substring(month, 1, 4) as year,
+        'previsto' as time_split,
+        null as user_id,
+        'João' as user_name,
+        cost_juau + cost_lana as cost,
+        cost_juau as user_cost
+    FROM {{ref('seed_gastos_futuros')}}
+    WHERE  month > strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')
+    UNION ALL    
+    SELECT
+        "group" as cluster,
+        category,
+        month,
+        substring(month, 1, 4) as year,
+        'previsto' as time_split,
+        null as user_id,
+        'Hallana' as user_name,
+        cost_juau + cost_lana as cost,
+        cost_lana as user_cost
+    FROM {{ref('seed_gastos_futuros')}}
+    WHERE  month > strftime('%Y-%m', date_trunc('month', current_date) - INTERVAL '1 month')
+),
+
+totals AS (SELECT * FROM future_spends
+UNION ALL
+SELECT * FROM planned_for_future
+UNION ALL
+SELECT * FROM past_spends
+UNION ALL
+SELECT * FROM gains),
+
+totals_wo_extra AS (SELECT * FROM future_spends
+UNION ALL
+SELECT * FROM planned_for_future
+UNION ALL
+SELECT * FROM past_spends_wo_extra
+UNION ALL
+SELECT * FROM gains),
+
+savings AS (
+SELECT 
+	'poupança' as cluster,
+	'poupança' as category,
+	month,
+	year,
+	time_split,
+	user_id,
+	user_name,
+	- sum(cost) as cost,
+	- sum(user_cost) as user_cost
+FROM totals
+GROUP BY ALL
+),
+
+savings_wo_extra AS (
+SELECT 
+	'poupança' as cluster,
+	'poupança' as category,
+	month,
+	year,
+	time_split,
+	user_id,
+	user_name,
+	- sum(cost) as cost,
+	- sum(user_cost) as user_cost
+FROM totals_wo_extra
+GROUP BY ALL
+)
+
+SELECT *, 'ganhos + ganhos extra' as earning_category FROM totals
+UNION ALL
+SELECT *, 'ganhos + ganhos extra' as earning_category FROM savings
+
+UNION ALL 
+
+SELECT *, 'ganhos' as earning_category FROM totals_wo_extra
+UNION ALL
+SELECT *, 'ganhos' as earning_category FROM savings_wo_extra
