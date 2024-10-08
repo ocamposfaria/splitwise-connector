@@ -8,7 +8,7 @@ WITH fundamental_changes AS (
 		END AS group_name,
 		e.id AS expense_id,
 		-- categoria própria com base em colchetes
-		CASE
+		trim(CASE
 		    WHEN e.group_id = '35336773' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas joão'
 		    WHEN e.group_id = '40055224' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas lana'
 		    ELSE 
@@ -17,7 +17,7 @@ WITH fundamental_changes AS (
 		            	THEN replace(regexp_split_to_array(e.description, '] ')[1], '[', '') 
 		            ELSE NULL 
 		        END
-		END AS category,
+		END) AS category,
 		CASE 
 			WHEN e.description LIKE '%]%' AND e.description LIKE '%[%' THEN regexp_split_to_array(e.description, '] ')[2]
 			ELSE e.description
@@ -67,6 +67,15 @@ WITH fundamental_changes AS (
 final_changes AS (SELECT
 	group_id,
 	group_name,
+	CASE
+		WHEN group_id = '39217365' and created_at between '2024-09-28' and '2024-10-04' THEN 'viagens' -- caso especial 
+		WHEN expense_id IN ('3289649901', '3416288099', '3415928093', '3416309318') THEN 'viagens' -- caso especial 
+		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and category NOT LIKE '%compras%' THEN 'nossa residência'
+		WHEN group_id in ('68546779', '62599381', '57014599', '39698610', '37823696', '32626795', '40780239', '24693109', '22427597') THEN 'viagens'
+		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and category LIKE '%compras%' THEN 'compras'
+		WHEN category in ('ganhos', 'ganhos extra') THEN 'ganhos'
+		ELSE 'unknown'
+	END AS cluster,
 	expense_id,
     CASE 
         WHEN array_length(regexp_split_to_array(category, ' - ')) = 2 
@@ -155,13 +164,18 @@ SELECT
 
 	null as group_id,
 	null as group_name,
+	'ganhos' as cluster,
 	null as expense_id,
 	gp.category as category,
 	null as subcategory,
 	gp.description as description,
 	null as cost,
 	gp.month as month,
-	null as user_id,
+	CASE
+		WHEN gp.user_name = 'Hallana' THEN '20401164'
+		WHEN gp.user_name = 'João' THEN '27512092'
+		ELSE null
+	END as user_id,
 	gp.user_name as user_name,
 	- gp.granular_cost as user_cost,
 	null as user_percentage,

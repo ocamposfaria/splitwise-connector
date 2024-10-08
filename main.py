@@ -372,7 +372,7 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks
 @app.post("/export_all_tables_to_csv/", tags=["Batch"])
 async def export_all_tables_to_csv():
     responses = []
-    for table_name in ['master', 'month', 'master_limits_and_percentages', 'chart_limits_and_results']:
+    for table_name in ['master', 'month', 'master_limits_and_percentages', 'chart_limits_and_results', 'overall_costs_future_estimated']:
         response = duckdb_client.export_table_to_csv(schema_name='main', table_name=table_name)
         responses.append(response)
     
