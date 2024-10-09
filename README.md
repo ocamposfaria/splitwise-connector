@@ -49,14 +49,27 @@ This project is a Python application that uses FastAPI to act as a proxy, facili
 
 3. Configure allowed environment variables, such as Splitwise API keys and AWS credentials, using an .env file.
     ```
-    # splitwise settings
-    CONSUMER_KEY='<your key here>'
-    CONSUMER_SECRET='<your key here>'
-    API_KEY='<your key here>'
+    # splitwise
+    API_KEY="<your value here>"
 
-    # aws settings
-    AWS_ACCESS_KEY_ID="<your key here>"
-    AWS_SECRET_ACCESS_KEY="<your key here>"
+    # aws
+    AWS_SECRET_ACCESS_KEY="<your value here>"
+    AWS_ACCESS_KEY_ID="<your value here>"
+
+    # google
+    TYPE="<your value here>"
+    PROJECT_ID="<your value here>"
+    PRIVATE_KEY_ID="<your value here>"
+    PRIVATE_KEY="<your value here>"
+    CLIENT_EMAIL="<your value here>"
+    CLIENT_ID="<your value here>"
+    AUTH_URI="<your value here>"
+    TOKEN_URI="<your value here>"
+    AUTH_PROVIDER_X509_CERT_URL="<your value here>"
+    CLIENT_X509_CERT_URL="<your value here>"
+    UNIVERSE_DOMAIN="<your value here>"
+
+    # deltalake
     AWS_S3_ALLOW_UNSAFE_RENAME=true
     ```
 4. Run a FastAPI application:
