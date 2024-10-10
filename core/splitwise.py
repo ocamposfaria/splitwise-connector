@@ -156,6 +156,9 @@ class Splitwise:
         main_user_id = None,
         main_user_paid_share = None,
         main_user_owed_share = None,
+        second_user_id = None,
+        second_user_paid_share = None,
+        second_user_owed_share = None,
         other_users = None
     ):
         data = {}
@@ -182,10 +185,16 @@ class Splitwise:
             data["users__0__paid_share"] = str(main_user_paid_share)
         if main_user_owed_share is not None:
             data["users__0__owed_share"] = str(main_user_owed_share)
+        if second_user_id is not None:
+            data["users__1__user_id"] = second_user_id
+        if second_user_paid_share is not None:
+            data["users__1__paid_share"] = str(second_user_paid_share)
+        if second_user_owed_share is not None:
+            data["users__1__owed_share"] = str(second_user_owed_share)
         
         if other_users:
             for index, user in enumerate(other_users):
                 for key, value in user.dict(exclude_none=True).items():
-                    data[f"users__{index+1}__{key}"] = str(value)
+                    data[f"users__{index+1}__{key}"] = str(value) # FIXME essa soma tá cagada
 
         return self._make_request(f"update_expense/{expense_id}", method="POST", data=data)

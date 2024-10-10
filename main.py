@@ -144,6 +144,9 @@ def update_expense(
     main_user_id: int = None,
     main_user_paid_share: float = None,
     main_user_owed_share: float = None,
+    second_user_id: int = None,
+    second_user_paid_share: float = None,
+    second_user_owed_share: float = None,
     other_users: Optional[list[OtherUsers]]  = None
 ):
 
@@ -161,6 +164,9 @@ def update_expense(
                 main_user_id = main_user_id,
                 main_user_paid_share = main_user_paid_share,
                 main_user_owed_share = main_user_owed_share,
+                second_user_id = second_user_id,
+                second_user_paid_share = second_user_paid_share,
+                second_user_owed_share = second_user_owed_share,
                 other_users = other_users 
         )
         return response
@@ -241,14 +247,6 @@ def save_sheet_as_seed(workbook_name, sheet_name):
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-@app.post("/save_listed_sheets_as_seeds", tags=["Google"])
-def save_all_my_sheets_as_seeds():
-    try:
-        response = google_client.save_all_my_sheets_as_seeds()
-        return response
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/send_email/", tags=["Google"])
 async def send_email_endpoint(email: EmailSchema, background_tasks: BackgroundTasks):
@@ -281,6 +279,19 @@ async def update_expenses_month(request: UpdateExpensesRequest):
     
     return responses
 
+
+@app.post("/save_all_my_sheets_as_seeds/", tags=["Batch"])
+async def save_all_my_sheets_as_seeds():
+
+    responses = []
+    
+    for sheet in ['Ganhos', 'Limites', 'Presentes', 'Gastos futuros']:
+            response = google_client.save_sheet_as_seed('Suporte p orçamento', sheet)
+            responses.append(response)
+    
+    return responses
+
+
 @app.post("/refresh_splitwise/", tags=["Batch"])
 async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks=2)).strftime('%Y-%m-%dT%H:%M:%SZ')):
     """
@@ -304,9 +315,6 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks
             errors.append(f"Falha na ingestão de grupos no S3: {error_message}")
         else:
             successes.append(response)
-    
-    # FIXME 
-    # Incluir extração do Google Sheets!
 
     if not errors:
         response = duckdb_client.duckdb_ingestion(schema_name='splitwise', table_name='expenses')
@@ -377,3 +385,42 @@ async def export_all_tables_to_csv():
         responses.append(response)
     
     return responses
+
+@app.post("/correct_expenses_percentages/", tags=["Batch"])
+async def correct_expenses_percentages(except_those: str = None):
+    result = duckdb_client.query_duckdb("""SELECT * FROM main.validate_percentages""")
+    
+    if result.get("data") is None:
+        return {"status": 500, "message": "Erro ao consultar DuckDB"}
+    
+    df = result["data"]
+
+    if df.empty:
+        return {"status": 404, "message": "Nenhum dado encontrado"}
+
+    if except_those:
+        except_ids = except_those.split(";")
+    else:
+        except_ids = []
+
+    update_results = []
+
+    for _, row in df.iterrows():
+        expense_id = str(row['expense_id'])
+
+        if expense_id in except_ids:
+            continue  
+
+        result = splitwise_client.update_expense(
+            expense_id=expense_id,
+            main_user_id=row['main_user_id'],
+            main_user_owed_share=row['main_user_owed_share'],
+            main_user_paid_share=row['main_user_paid_share'],
+            second_user_id=row['second_user_id'],
+            second_user_paid_share=row['second_user_paid_share'],
+            second_user_owed_share=row['second_user_owed_share']
+        )
+
+        update_results.append(result)
+
+    return {"status": 200, "update_results": update_results}

@@ -55,13 +55,6 @@ class Google:
         except Exception as e:
             return {"message": f"Erro ao salvar a planilha {sheet_name}: {str(e)}", "status_code": 500}
 
-    def save_all_my_sheets_as_seeds(self):
-        status = {}
-        for sheet in ['Ganhos', 'Limites', 'Presentes', 'Gastos futuros']:
-            result = self.save_sheet_as_seed('Suporte p orçamento', sheet)
-            status[sheet] = result
-        return status
-
     def send_email(self, email: EmailSchema):
         sender_email = self.sender_email
         sender_password = self.sender_password

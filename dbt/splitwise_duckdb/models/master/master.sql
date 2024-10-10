@@ -9,8 +9,8 @@ WITH fundamental_changes AS (
 		e.id AS expense_id,
 		-- categoria própria com base em colchetes
 		trim(CASE
-		    WHEN e.group_id = '35336773' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas joão'
-		    WHEN e.group_id = '40055224' AND e.description NOT LIKE '%]%' AND e.description NOT LIKE '%[%' THEN 'apenas lana'
+		    WHEN e.group_id = '35336773' AND coalesce(e.description, '') NOT LIKE '%]%' AND coalesce(e.description, '') NOT LIKE '%[%' THEN 'apenas joão'
+		    WHEN e.group_id = '40055224' AND coalesce(e.description, '') NOT LIKE '%]%' AND coalesce(e.description, '') NOT LIKE '%[%' THEN 'apenas lana'
 		    ELSE 
 		        CASE 
 		            WHEN array_length(regexp_split_to_array(e.description, '] ')) = 2 
@@ -19,7 +19,7 @@ WITH fundamental_changes AS (
 		        END
 		END) AS category,
 		CASE 
-			WHEN e.description LIKE '%]%' AND e.description LIKE '%[%' THEN regexp_split_to_array(e.description, '] ')[2]
+			WHEN coalesce(e.description, '') LIKE '%]%' AND coalesce(e.description, '') LIKE '%[%' THEN regexp_split_to_array(e.description, '] ')[2]
 			ELSE e.description
 		END AS description,
 		cast(e.cost as float) as cost,
@@ -70,9 +70,9 @@ final_changes AS (SELECT
 	CASE
 		WHEN group_id = '39217365' and created_at between '2024-09-28' and '2024-10-04' THEN 'viagens' -- caso especial 
 		WHEN expense_id IN ('3289649901', '3416288099', '3415928093', '3416309318') THEN 'viagens' -- caso especial 
-		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and category NOT LIKE '%compras%' THEN 'nossa residência'
+		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and coalesce(category, '') NOT LIKE '%compras%' THEN 'nossa residência'
 		WHEN group_id in ('68546779', '62599381', '57014599', '39698610', '37823696', '32626795', '40780239', '24693109', '22427597') THEN 'viagens'
-		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and category LIKE '%compras%' THEN 'compras'
+		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and coalesce(category, '') LIKE '%compras%' THEN 'compras'
 		WHEN category in ('ganhos', 'ganhos extra') THEN 'ganhos'
 		ELSE 'unknown'
 	END AS cluster,
@@ -143,14 +143,14 @@ final_changes AS (SELECT
 FROM fundamental_changes
 WHERE 1=1 
 	-- filtros básicos
-	AND description NOT LIKE '%FILTRAR%' 
+	AND coalesce(description, '') NOT LIKE '%FILTRAR%' 
 	AND description <> 'Payment' 
 	AND description <> 'QUITE'
 	AND deleted_at IS NULL
 	-- não quero registros meus vindo do grupo da lana
 	AND ((group_id = '40055224' AND user_id = '20401164') OR (group_id <> '40055224'))
 	-- remove ganhos (antigos inputs)
-	AND (category IS NULL OR category NOT LIKE '%ganhos%'))
+	AND (category IS NULL OR coalesce(category, '') NOT LIKE '%ganhos%'))
 
 SELECT * FROM final_changes
 -- removendo meses protótipos
