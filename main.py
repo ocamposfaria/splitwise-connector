@@ -340,37 +340,7 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks
         else:
             successes.append(response)
     
-    if not errors:
-        response = duckdb_client.export_table_to_csv(schema_name='main', table_name='master')
-        if response['status_code'] != 200:
-            error_message = response.get('message', 'Erro desconhecido.')
-            errors.append(f"Falha ao exportar a tabela 'master' para CSV: {error_message}")
-        else:
-            successes.append(response)
-
-    if not errors:
-        response = duckdb_client.export_table_to_csv(schema_name='main', table_name='month')
-        if response['status_code'] != 200:
-            error_message = response.get('message', 'Erro desconhecido.')
-            errors.append(f"Falha ao exportar a tabela 'month' para CSV: {error_message}")
-        else:
-            successes.append(response)
-    
-    if not errors:
-        response = duckdb_client.export_table_to_csv(schema_name='main', table_name='master_limits_and_percentages')
-        if response['status_code'] != 200:
-            error_message = response.get('message', 'Erro desconhecido.')
-            errors.append(f"Falha ao exportar a tabela 'master_limits_and_percentages' para CSV: {error_message}")
-        else:
-            successes.append(response)
-    
-    if not errors:
-        response = duckdb_client.export_table_to_csv(schema_name='main', table_name='chart_limits_and_results')
-        if response['status_code'] != 200:
-            error_message = response.get('message', 'Erro desconhecido.')
-            errors.append(f"Falha ao exportar a tabela 'chart_limits_and_results' para CSV: {error_message}")
-        else:
-            successes.append(response)
+    response = export_all_tables_to_csv()
     
     if not errors:
         return {"status": 200, "message": "all true", "success_responses": successes}
@@ -380,7 +350,14 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks
 @app.post("/export_all_tables_to_csv/", tags=["Batch"])
 async def export_all_tables_to_csv():
     responses = []
-    for table_name in ['master', 'month', 'master_limits_and_percentages', 'chart_limits_and_results', 'overall_costs_future_estimated']:
+    for table_name in [
+        'master', 
+        'month', 
+        'master_limits_and_percentages', 
+        'chart_limits_and_results', 
+        'overall_costs_future_estimated',
+        'validate_percentages',
+        'validate_bills']:
         response = duckdb_client.export_table_to_csv(schema_name='main', table_name=table_name)
         responses.append(response)
     
