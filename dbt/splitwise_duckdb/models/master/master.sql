@@ -71,7 +71,7 @@ final_changes AS (SELECT
 		WHEN group_id = '39217365' and created_at between '2024-09-28' and '2024-10-04' THEN 'viagens' -- caso especial 
 		WHEN expense_id IN ('3289649901', '3416288099', '3415928093', '3416309318') THEN 'viagens' -- caso especial 
 		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and coalesce(category, '') NOT LIKE '%compras%' THEN 'nossa residência'
-		WHEN group_id in ('68546779', '62599381', '57014599', '39698610', '37823696', '32626795', '40780239', '24693109', '22427597') THEN 'viagens'
+		WHEN group_id in ('68546779', '62599381', '57014599', '39698610', '37823696', '32626795', '40780239', '24693109', '22427597', '73327569') THEN 'viagens'
 		WHEN group_id in ('33823062', '40055224', '34137144', '35336773') and coalesce(category, '') LIKE '%compras%' THEN 'compras'
 		WHEN category in ('ganhos', 'ganhos extra') THEN 'ganhos'
 		ELSE 'unknown'
