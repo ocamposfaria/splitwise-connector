@@ -144,7 +144,7 @@ sim,ganhos,salário,6340.33,0,2024-04
 sim,ganhos,VR,693,0,2024-04
 sim,ganhos,salário,0,3309.52,2024-05
 sim,ganhos,VR,0,827.58,2024-05
-sim,ganhos,juros Léo,300,0,2024-05
+sim,ganhos extra,juros Léo,300,0,2024-05
 sim,ganhos,salário,6351.48,0,2024-05
 sim,ganhos,VR,693,0,2024-05
 sim,ganhos,salário,0,3309.52,2024-06
@@ -153,32 +153,37 @@ sim,ganhos,salário,6697.71,0,2024-06
 sim,ganhos,VR,660,0,2024-06
 não,ganhos extra,presente Léo (pra usar na viagem),750,0,2024-07
 não,ganhos extra,presente Léo (pra usar na viagem),0,750,2024-07
-sim,ganhos,salário,0,3309.52,2024-07
+sim,ganhos,salário,0,3308.49,2024-07
 sim,ganhos,VR,0,887.22,2024-07
 sim,ganhos,salário,6809.01,0,2024-07
 sim,ganhos,VR,759,0,2024-07
 sim,ganhos extra,cashback imposto de renda,1406.5,0,2024-08
 sim,ganhos extra,cashback imposto de renda,0,338.25,2024-08
-sim,ganhos,salário,0,3309.52,2024-08
+sim,ganhos,salário,0,3308.49,2024-08
 sim,ganhos,VR,0,887.22,2024-08
-sim,ganhos,salário,6625.71,0,2024-08
+sim,ganhos,salário,7787.91,0,2024-08
 sim,ganhos,VR,726,0,2024-08
-sim,ganhos,salário,0,3309.52,2024-09
-sim,ganhos,VR,0,795.75,2024-09
-sim,ganhos,salário,6625.71,0,2024-09
+não,ganhos extra,presente níver Léo,500,0,2024-09
+sim,ganhos extra,restituição notal legal,0,183.44,2024-09
+sim,ganhos extra,restituição notal legal,100.26,0,2024-09
+sim,ganhos,salário,0,3646.77,2024-09
+sim,ganhos,VR,0,788.64,2024-09
+sim,ganhos,salário,8675.75,0,2024-09
 sim,ganhos,VR,693,0,2024-09
-sim,ganhos,salário,0,3309.52,2024-10
-sim,ganhos,VR,0,795.75,2024-10
-sim,ganhos,salário,6625.71,0,2024-10
-sim,ganhos,VR,693,0,2024-10
-sim,ganhos,salário,0,3309.52,2024-11
-sim,ganhos,VR,0,795.75,2024-11
-sim,ganhos,salário,6625.71,0,2024-11
-sim,ganhos,13º Ambev,0,3309.52,2024-11
-sim,ganhos,14º Ambev,0,3290.8,2024-11
-sim,ganhos,VR,693,0,2024-11
-sim,ganhos,salário,0,3309.52,2024-12
+sim,ganhos,férias Ambev,0,759.25,2024-10
+sim,ganhos,salário (com descontos),0,3037.27,2024-10
+sim,ganhos,VR,0,722.92,2024-10
+sim,ganhos,salário,7468.68,0,2024-10
+sim,ganhos,VR,759,0,2024-10
+sim,ganhos,férias Ambev,0,3037.03,2024-11
+sim,ganhos,salário (com descontos),0,492.24,2024-11
+sim,ganhos,VR,0,328.6,2024-11
+sim,ganhos,salário,6647.46,0,2024-11
+sim,ganhos,13º Ambev,0,2135.41,2024-11
+sim,ganhos,14º Ambev,0,4270.82,2024-11
+sim,ganhos,VR,627,0,2024-11
+sim,ganhos,salário,0,3646.77,2024-12
 sim,ganhos,VR,0,795.75,2024-12
 sim,ganhos,salário,6625.71,0,2024-12
-sim,ganhos,13º Compass (proporcional),4755.25,0,2024-12
+sim,ganhos,13º Compass (proporcional),2887.8,0,2024-12
 sim,ganhos,VR,693,0,2024-12
