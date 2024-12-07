@@ -162,6 +162,8 @@ SELECT * FROM gains),
 
 totals_wo_extra AS (SELECT * FROM future_spends
 UNION ALL
+SELECT * FROM future_trips_and_shopping
+UNION ALL
 SELECT * FROM planned_for_future
 UNION ALL
 SELECT * FROM past_spends_wo_extra
