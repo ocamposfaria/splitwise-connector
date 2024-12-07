@@ -20,6 +20,25 @@ GROUP BY ALL),
 
 year_months AS (SELECT * FROM {{ref("month")}} WHERE month >= strftime('%Y-%m', date_trunc('month', current_date))),
 
+future_trips_and_shopping AS (
+	SELECT 
+		cluster,
+		category,
+		ym.month,
+		ym.year,
+		'previsto' as time_split,
+		user_id,
+		user_name,
+		cost,
+		user_cost
+
+	FROM
+		{{ref("overall_costs")}} oc
+	JOIN year_months ym ON ym.month = oc.month
+	WHERE 
+		cluster in ('viagens', 'compras')
+),
+
 future_spends AS (SELECT 	
 	a.cluster,
     a.category,
@@ -132,6 +151,8 @@ planned_for_future AS (
 ),
 
 totals AS (SELECT * FROM future_spends
+UNION ALL
+SELECT * FROM future_trips_and_shopping
 UNION ALL
 SELECT * FROM planned_for_future
 UNION ALL
