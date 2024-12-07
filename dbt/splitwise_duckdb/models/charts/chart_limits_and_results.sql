@@ -6,7 +6,7 @@ SELECT
 	sum(m.user_cost) as user_cost
 FROM
     {{ref('master_limits_and_percentages')}} mlap
-JOIN {{ref('master')}} m ON
+LEFT JOIN {{ref('master')}} m ON
 	m.month = mlap.month
 	and m.category = mlap.category
 	and m.user_name = mlap.user_name
