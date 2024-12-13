@@ -339,8 +339,10 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks
             errors.append(f"Falha na execução do `dbt build`: {error_message}")
         else:
             successes.append(response)
-    
-    response = export_all_tables_to_csv()
+
+    if not errors:
+        export_response = await export_all_tables_to_csv()
+        successes.append(export_response)
     
     if not errors:
         return {"status": 200, "message": "all true", "success_responses": successes}
