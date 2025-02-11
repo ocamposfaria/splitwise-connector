@@ -1,70 +1,70 @@
 is_percentage_eligible,category,name,cost_juau,cost_lana,month
-sim,ganhos extra,PA,500,0,2022-08
 não,ganhos extra,dinheiro léo,1000,0,2022-08
-não,ganhos,VR,0,744,2022-08
+sim,ganhos extra,PA,500,0,2022-08
 sim,ganhos,salário,0,2721,2022-08
-não,ganhos,VR,500,0,2022-08
 sim,ganhos,salário,2000,0,2022-08
-não,ganhos extra,presente ifood arthu,70,0,2022-09
-não,ganhos extra,receita federal,80.79,0,2022-09
-não,ganhos extra,presente vô Gesi,200,0,2022-09
-não,ganhos extra,presente Léo,175,0,2022-09
-sim,ganhos extra,PA,500,0,2022-09
-não,ganhos extra,presente lana,130,0,2022-09
-não,ganhos,VR,0,744,2022-09
-sim,ganhos,salário,0,2721,2022-09
-não,ganhos,VR,500,0,2022-09
-sim,ganhos,salário,1200,0,2022-09
+não,ganhos,VR,0,744,2022-08
+não,ganhos,VR,500,0,2022-08
 sim,ganhos,adiantamento,800,0,2022-09
+sim,ganhos extra,PA,500,0,2022-09
+não,ganhos extra,presente ifood arthu,70,0,2022-09
+não,ganhos extra,presente lana,130,0,2022-09
+não,ganhos extra,presente Léo,175,0,2022-09
+não,ganhos extra,presente vô Gesi,200,0,2022-09
+não,ganhos extra,receita federal,80.79,0,2022-09
+sim,ganhos,salário,0,2721,2022-09
+sim,ganhos,salário,1200,0,2022-09
+não,ganhos,VR,0,744,2022-09
+não,ganhos,VR,500,0,2022-09
+sim,ganhos,adiantamento,800,0,2022-10
 sim,ganhos extra,PA,500,0,2022-10
-não,ganhos,VR,0,774,2022-10
 sim,ganhos,salário,0,2721,2022-10
 sim,ganhos,salário,1200,0,2022-10
+não,ganhos,VR,0,774,2022-10
 não,ganhos,VR,500,0,2022-10
-sim,ganhos,adiantamento,800,0,2022-10
+sim,ganhos,adiantamento,800,0,2022-11
 sim,ganhos extra,PA,550,0,2022-11
 não,ganhos extra,reembolso mobly,926.94,0,2022-11
-não,ganhos,VR,0,774,2022-11
 sim,ganhos,salário,0,2721,2022-11
-não,ganhos,VR,500,0,2022-11
 sim,ganhos,salário,1200,0,2022-11
-sim,ganhos,adiantamento,800,0,2022-11
+não,ganhos,VR,0,774,2022-11
+não,ganhos,VR,500,0,2022-11
+sim,ganhos,adiantamento,800,0,2022-12
 não,ganhos extra,presente natal Léo,500,0,2022-12
-não,ganhos,VR,0,774,2022-12
 sim,ganhos,salário,0,2721,2022-12
 sim,ganhos,salário,1200,0,2022-12
-sim,ganhos,adiantamento,800,0,2022-12
+não,ganhos,VR,0,774,2022-12
 não,ganhos,VR,500,0,2022-12
-sim,ganhos extra,PA,500,0,2023-01
-não,ganhos extra,aplicação RDB,3.34,0,2023-01
-não,ganhos extra,presente ano novo Léo,100,0,2023-01
-não,ganhos,VR,0,774,2023-01
-sim,ganhos,salário,0,2721,2023-01
-não,ganhos,VR,500,0,2023-01
-sim,ganhos,salário,1200,0,2023-01
 sim,ganhos,adiantamento,800,0,2023-01
+não,ganhos extra,aplicação RDB,3.34,0,2023-01
+sim,ganhos extra,PA,500,0,2023-01
+não,ganhos extra,presente ano novo Léo,100,0,2023-01
+sim,ganhos,salário,0,2721,2023-01
+sim,ganhos,salário,1200,0,2023-01
+não,ganhos,VR,0,774,2023-01
+não,ganhos,VR,500,0,2023-01
+sim,ganhos,adiantamento,800,0,2023-02
 não,ganhos extra,correção splitwise,0,20,2023-02
 não,ganhos extra,extra Léo,50,0,2023-02
 sim,ganhos extra,PA,550,0,2023-02
-não,ganhos,VR,0,565.25,2023-02
 sim,ganhos,salário,0,2721,2023-02
-não,ganhos,VR,500,0,2023-02
 sim,ganhos,salário,420.47,0,2023-02
 sim,ganhos,salário,990.67,0,2023-02
-sim,ganhos,adiantamento,800,0,2023-02
+não,ganhos,VR,0,565.25,2023-02
+não,ganhos,VR,500,0,2023-02
+sim,ganhos,adiantamento,1363.84,0,2023-03
 não,ganhos extra,lollapalooza Léo :),0,750,2023-03
 não,ganhos extra,lollapalooza Léo :),750,0,2023-03
-sim,ganhos,VR,500,0,2023-03
 sim,ganhos,salário,1623.52,0,2023-03
-sim,ganhos,adiantamento,1363.84,0,2023-03
-sim,ganhos,VR,0,803,2023-03
 sim,ganhos,salário,0,2721,2023-03
+sim,ganhos,VR,500,0,2023-03
+sim,ganhos,VR,0,803,2023-03
+não,ganhos extra,13º Mobly (CLT),525.65,0,2023-04
 não,ganhos extra,presente de formatura Léo,1000,0,2023-04
 sim,ganhos,salário,0,2721,2023-04
 sim,ganhos,salário + rescisão,2381.21,0,2023-04
 sim,ganhos,VR,0,565,2023-04
 sim,ganhos,VR,500,0,2023-04
-não,ganhos extra,13º Mobly (CLT),525.65,0,2023-04
 não,ganhos extra,presente mop spray Léo,0,100,2023-05
 não,ganhos extra,presente mop spray Léo,100,0,2023-05
 sim,ganhos,salário,4064.775,0,2023-05
@@ -73,78 +73,78 @@ sim,ganhos,VR,0,714,2023-05
 sim,ganhos,salário,4064.775,0,2023-06
 sim,ganhos,salário,0,2721,2023-06
 sim,ganhos,VR,0,654.25,2023-06
+não,ganhos extra,bônus Mobly,525,0,2023-07
+não,ganhos extra,presente Léo,1800,0,2023-07
+não,ganhos extra,presente Léo,200,0,2023-07
 sim,ganhos,salário,4064.775,0,2023-07
 sim,ganhos,salário,0,3290.8,2023-07
 sim,ganhos,VR,0,773.5,2023-07
-não,ganhos extra,presente Léo,1800,0,2023-07
-não,ganhos extra,bônus Mobly,525,0,2023-07
-não,ganhos extra,presente Léo,200,0,2023-07
-sim,ganhos,VR,0,966,2023-08
 sim,ganhos,salário,4064.775,0,2023-08
 sim,ganhos,salário,0,3290.8,2023-08
+sim,ganhos,VR,0,966,2023-08
+não,ganhos extra,13º Mobly (PJ),1354.93,0,2023-09
+não,ganhos extra,presente de níver (Léo),700,0,2023-09
 não,ganhos extra,presente de níver (regis e edvar),140,0,2023-09
+não,ganhos extra,presente de níver (vô Gesi),200,0,2023-09
 sim,ganhos,salário,2210.49,0,2023-09
 sim,ganhos,salário,0,3290.8,2023-09
-sim,ganhos,VR,0,796,2023-09
 sim,ganhos,salário,1233.75,0,2023-09
+sim,ganhos,VR,0,796,2023-09
 sim,ganhos,VR,400,0,2023-09
-não,ganhos extra,presente de níver (Léo),700,0,2023-09
-não,ganhos extra,presente de níver (vô Gesi),200,0,2023-09
-não,ganhos extra,13º Mobly (PJ),1354.93,0,2023-09
+não,ganhos extra,presente Léo,250,0,2023-10
 não,ganhos extra,presente roger waters (Léo),0,350,2023-10
 não,ganhos extra,presente roger waters (Léo),350,0,2023-10
-sim,ganhos,VR,0,541,2023-10
-sim,ganhos,salário,0,3791.91,2023-10
-sim,ganhos,VR,2304.33,0,2023-10
-sim,ganhos,salário,4230.03,0,2023-10
-não,ganhos extra,presente Léo,250,0,2023-10
 sim,ganhos,previdência sicoob,333.33,0,2023-10
-sim,ganhos,salário,4230.03,0,2023-11
-sim,ganhos,VR,1896.83,0,2023-11
-sim,ganhos,salário,0,3413.48,2023-11
-sim,ganhos,VR,0,604.77,2023-11
-não,ganhos extra,juros Léo,50,0,2023-11
-não,ganhos extra,13º Sicoob (1ª parcela),462.95,0,2023-11
+sim,ganhos,salário,0,3791.91,2023-10
+sim,ganhos,salário,4230.03,0,2023-10
+sim,ganhos,VR,0,541,2023-10
+sim,ganhos,VR,2304.33,0,2023-10
 não,ganhos extra,13º Ambev,0,3290.8,2023-11
+não,ganhos extra,13º Sicoob (1ª parcela),462.95,0,2023-11
 não,ganhos extra,14º Ambev,0,3290.8,2023-11
+não,ganhos extra,juros Léo,50,0,2023-11
 sim,ganhos,previdência sicoob,333.33,0,2023-11
-sim,ganhos,VR,1896.83,0,2023-12
-sim,ganhos,VR (cesta de natal),835.99,0,2023-12
-sim,ganhos,salário,4230.03,0,2023-12
-sim,ganhos,salário,0,3290.8,2023-12
-sim,ganhos,VR,0,795.75,2023-12
+sim,ganhos,salário,4230.03,0,2023-11
+sim,ganhos,salário,0,3413.48,2023-11
+sim,ganhos,VR,1896.83,0,2023-11
+sim,ganhos,VR,0,604.77,2023-11
 não,ganhos extra,13º Sicoob (2ª parcela),737.39,0,2023-12
 sim,ganhos,previdência sicoob,333.33,0,2023-12
-sim,ganhos,salário,4234.15,0,2024-01
-sim,ganhos,VR,1896.83,0,2024-01
-sim,ganhos,salário,0,3292.96,2024-01
-sim,ganhos,VR,0,827.58,2024-01
-sim,ganhos,previdência sicoob,333.33,0,2024-01
+sim,ganhos,salário,4230.03,0,2023-12
+sim,ganhos,salário,0,3290.8,2023-12
+sim,ganhos,VR,1896.83,0,2023-12
+sim,ganhos,VR,0,795.75,2023-12
+sim,ganhos,VR (cesta de natal),835.99,0,2023-12
 sim,ganhos,extra Léo,50,0,2024-01
-sim,ganhos,VR,1896.83,0,2024-02
+sim,ganhos,previdência sicoob,333.33,0,2024-01
+sim,ganhos,salário,4234.15,0,2024-01
+sim,ganhos,salário,0,3292.96,2024-01
+sim,ganhos,VR,1896.83,0,2024-01
+sim,ganhos,VR,0,827.58,2024-01
+não,ganhos extra,bônus Sicoob (ref. out/2023 a fev/2024),1638.39,0,2024-02
+não,ganhos extra,bônus Sicoob (ref. out/2023 a fev/2024),0,444.9,2024-02
 sim,ganhos,previdência sicoob,333.33,0,2024-02
 sim,ganhos,salário,4247.56,0,2024-02
 sim,ganhos,salário,0,3309.52,2024-02
+sim,ganhos,VR,1896.83,0,2024-02
 sim,ganhos,VR,0,795.75,2024-02
-não,ganhos extra,bônus Sicoob (ref. out/2023 a fev/2024),1638.39,0,2024-02
-não,ganhos extra,bônus Sicoob (ref. out/2023 a fev/2024),0,444.9,2024-02
-sim,ganhos,salário Sicoob (ref. 8 dias),1238.3,0,2024-03
-sim,ganhos,férias Sicoob (proporcionais),3705.25,0,2024-03
 sim,ganhos,13º Sicoob (proporcional),857.35,0,2024-03
-sim,ganhos,VR Sicoob,1896.83,0,2024-03
-sim,ganhos,salário Compass (ref. x dias),1561.43,0,2024-03
-sim,ganhos,VR Compass,165,0,2024-03
-sim,ganhos,salário,0,3791.08,2024-03
-sim,ganhos,VR,0,509.28,2024-03
 não,ganhos extra,bônus Ambev (ref. jan/2023 a dez/2023),5070.31,0,2024-03
 não,ganhos extra,bônus Ambev (ref. jan/2023 a dez/2023),0,11827.59,2024-03
+sim,ganhos,férias Sicoob (proporcionais),3705.25,0,2024-03
+sim,ganhos,salário,0,3791.08,2024-03
+sim,ganhos,salário Compass (ref. x dias),1561.43,0,2024-03
+sim,ganhos,salário Sicoob (ref. 8 dias),1238.3,0,2024-03
+sim,ganhos,VR,0,509.28,2024-03
+sim,ganhos,VR Compass,165,0,2024-03
+sim,ganhos,VR Sicoob,1896.83,0,2024-03
 sim,ganhos,salário,0,3309.52,2024-04
 sim,ganhos,VR,0,827.58,2024-04
 sim,ganhos,salário,6340.33,0,2024-04
 sim,ganhos,VR,693,0,2024-04
 sim,ganhos,salário,0,3309.52,2024-05
-sim,ganhos,VR,0,827.58,2024-05
 sim,ganhos extra,juros Léo,300,0,2024-05
+sim,ganhos,VR,0,827.58,2024-05
 sim,ganhos,salário,6351.48,0,2024-05
 sim,ganhos,VR,693,0,2024-05
 sim,ganhos,salário,0,3309.52,2024-06
@@ -178,12 +178,32 @@ sim,ganhos,VR,759,0,2024-10
 sim,ganhos,férias Ambev,0,3037.03,2024-11
 sim,ganhos,salário (com descontos),0,492.24,2024-11
 sim,ganhos,VR,0,328.6,2024-11
-sim,ganhos,salário,6647.46,0,2024-11
 sim,ganhos,13º Ambev,0,2135.41,2024-11
-sim,ganhos,14º Ambev,0,4270.82,2024-11
+sim,ganhos extra,14º Ambev,0,4270.82,2024-11
+sim,ganhos,salário,6647.46,0,2024-11
 sim,ganhos,VR,627,0,2024-11
+não,ganhos extra,presente de natal Léo,700,0,2024-12
 sim,ganhos,salário,0,3646.77,2024-12
 sim,ganhos,VR,0,795.75,2024-12
-sim,ganhos,salário,6625.71,0,2024-12
 sim,ganhos,13º Compass (proporcional),2887.8,0,2024-12
-sim,ganhos,VR,693,0,2024-12
+sim,ganhos,salário,7051.66,0,2024-12
+sim,ganhos,VR,763,0,2024-12
+sim,ganhos,VR,660,0,2024-12
+sim,ganhos,salário,7000,0,2025-01
+sim,ganhos,salário,0,3646.77,2025-01
+sim,ganhos,VR,0,795.75,2025-01
+sim,ganhos,salário,7000,0,2025-02
+sim,ganhos,salário,0,3646.77,2025-02
+sim,ganhos,VR,0,795.75,2025-02
+sim,ganhos,salário,7000,0,2025-03
+sim,ganhos,salário,0,3646.77,2025-03
+sim,ganhos,VR,0,795.75,2025-03
+sim,ganhos,salário,7000,0,2025-04
+sim,ganhos,salário,0,3646.77,2025-04
+sim,ganhos,VR,0,795.75,2025-04
+sim,ganhos,salário,7000,0,2025-05
+sim,ganhos,salário,0,3646.77,2025-05
+sim,ganhos,VR,0,795.75,2025-05
+sim,ganhos,salário,7000,0,2025-06
+sim,ganhos,salário,0,3646.77,2025-06
+sim,ganhos,VR,0,795.75,2025-06
