@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from datetime import datetime, timedelta
+import re
 
 from typing import Optional
 
@@ -277,6 +278,48 @@ async def update_expenses_month(request: UpdateExpensesRequest):
         )
         responses.append(response)
     
+    return responses
+
+
+@app.post("/update_expenses_categories/", tags=["Batch"])
+async def update_expenses_categories(request: UpdateExpensesRequest):
+    """
+    Recebe um dicionário com nova categoria a ser colocada entre os [] do campo description, e o expense_id.
+    {
+        "expenses": {
+            "expense_id1": "category1",
+            "expense_id2": "category2",
+            ...
+        }
+    }
+
+    Exemplo: se o description de um gasto for "[padaria] dona de casa", e eu quiser mudar a categoria para "mercado", 
+    então o novo description vai ser "[mercado] dona de casa"
+    """
+    responses = []
+
+    for expense_id, new_category in request.expenses.items():
+        expense = splitwise_client.get_expense(expense_id)['data']
+        from icecream import ic
+        ic(expense)
+        description = expense['expense']['description']
+
+        if re.search(r"\[.*?\]", description):
+            new_description = re.sub(r"\[.*?\]", f"[{new_category}]", description)
+        else:
+            new_description = f"[{new_category}] {description}"
+
+        updated_expense = splitwise_client.update_expense(
+            expense_id=expense_id,
+            description=new_description
+        )
+
+        responses.append({
+            "expense_id": expense_id,
+            "old_description": description,
+            "new_description": new_description
+        })
+
     return responses
 
 
