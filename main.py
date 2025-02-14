@@ -207,6 +207,14 @@ def duckdb_ingestion(schema_name, table_name):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+@app.post("/duckdb_direct_ingestion", tags=["DuckDB"])
+def duckdb_ingestion(table_name, updated_after = (datetime.utcnow() - timedelta(weeks=2)).strftime('%Y-%m-%dT%H:%M:%SZ')):
+    try:
+        response = duckdb_client.duckdb_direct_ingestion(table_name=table_name, limit=1000, updated_after=updated_after, updated_before=None, dated_after=None, dated_before=None)
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 @app.post("/export_table_to_csv", tags=["DuckDB"])
 def export_table_to_csv(schema_name, table_name):
     try:
@@ -376,7 +384,7 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks
             successes.append(response)
 
     if not errors:
-        response = duckdb_client.run_dbt_command(command='dbt build')
+        response = duckdb_client.run_dbt_command(project='old', command='dbt build')
         if response['status_code'] != 200:
             error_message = response.get('message', 'Erro desconhecido.')
             errors.append(f"Falha na execução do `dbt build`: {error_message}")
@@ -393,18 +401,24 @@ async def refresh_splitwise(updated_after = (datetime.utcnow() - timedelta(weeks
         return {"status": 500, "message": errors}
 
 @app.post("/export_all_tables_to_csv/", tags=["Batch"])
-async def export_all_tables_to_csv():
+async def export_all_tables_to_csv(duckdb='old'):
     responses = []
-    for table_name in [
-        'master', 
-        'month', 
-        'master_limits_and_percentages', 
-        'chart_limits_and_results', 
-        'overall_costs_future_estimated',
-        'validate_percentages',
-        'validate_bills']:
-        response = duckdb_client.export_table_to_csv(schema_name='main', table_name=table_name)
-        responses.append(response)
+    if duckdb=='old':
+        for table_name in [
+            'master', 
+            'month', 
+            'master_limits_and_percentages', 
+            'chart_limits_and_results', 
+            'overall_costs_future_estimated',
+            'validate_percentages',
+            'validate_bills']:
+            response = duckdb_client.export_table_to_csv(duckdb=duckdb, schema_name='main', table_name=table_name)
+            responses.append(response)
+    else:
+        for table_name in [
+            'master']:
+            response = duckdb_client.export_table_to_csv(duckdb=duckdb, schema_name='main', table_name=table_name)
+            responses.append(response)
     
     return responses
 
@@ -446,3 +460,45 @@ async def correct_expenses_percentages(except_those: str = None):
         update_results.append(result)
 
     return {"status": 200, "update_results": update_results}
+
+@app.post("/refresh_splitwise_new_pipeline/", tags=["Batch NEW"])
+async def refresh_splitwise_new(updated_after = (datetime.utcnow() - timedelta(weeks=2)).strftime('%Y-%m-%dT%H:%M:%SZ')):
+    """
+    Atualiza Excel com dados do Splitwise.
+    """
+
+    errors = [] 
+    successes = []
+
+    if not errors:
+        response = duckdb_client.duckdb_direct_ingestion(table_name='expenses', limit=1000, updated_after=updated_after, updated_before=None, dated_after=None, dated_before=None)
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha na ingestão de despesas no DuckDB: {error_message}")
+        else:
+            successes.append(response)
+    
+    if not errors:
+        response = duckdb_client.duckdb_direct_ingestion(table_name='groups', limit=1000, updated_after=updated_after, updated_before=None, dated_after=None, dated_before=None)
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha na ingestão de grupos no DuckDB: {error_message}")
+        else:
+            successes.append(response)
+
+    if not errors:
+        response = duckdb_client.run_dbt_command(project='new', command='dbt build')
+        if response['status_code'] != 200:
+            error_message = response.get('message', 'Erro desconhecido.')
+            errors.append(f"Falha na execução do `dbt build`: {error_message}")
+        else:
+            successes.append(response)
+
+    if not errors:
+        export_response = await export_all_tables_to_csv(duckdb='new')
+        successes.append(export_response)
+    
+    if not errors:
+        return {"status": 200, "message": "all true", "success_responses": successes}
+    else:
+        return {"status": 500, "message": errors}
