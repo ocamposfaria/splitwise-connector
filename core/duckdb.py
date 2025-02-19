@@ -77,28 +77,34 @@ class DuckDB:
             if table_name == 'expenses':
                 data = splitwise_client.get_expenses(limit=limit, updated_after=updated_after, updated_before=updated_before, dated_after=dated_after, dated_before=dated_before)['data']
                 df = pd.DataFrame(data=data['expenses'])
+
             elif table_name == 'groups':
                 data = splitwise_client.get_groups()['data']
                 df = pd.DataFrame(data=data['groups'])
 
-            connection.register('df_temp', df)
-
+            connection.register('df_tmp', df)
             result_df = connection.execute(
-                f"""
-                CREATE SCHEMA IF NOT EXISTS splitwise;
-                CREATE OR REPLACE TABLE splitwise.{table_name} AS SELECT * FROM df_temp;
-                CREATE OR REPLACE TABLE splitwise.{table_name} AS 
-                (WITH ranked_records AS (
-                    SELECT
-                        *,
-                        ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) AS rn
-                    FROM
-                        df_temp
-                )
-                SELECT * EXCLUDE(rn) FROM ranked_records WHERE rn = 1 ORDER BY updated_at DESC);
-                """
+            f"""
+                    CREATE SCHEMA IF NOT EXISTS splitwise
+                    ;
+                    CREATE OR REPLACE TABLE splitwise.tmp_{table_name} AS SELECT * FROM df_tmp
+                    ;
+                    INSERT INTO newduckdb.splitwise.{table_name}
+                    SELECT * FROM newduckdb.splitwise.tmp_{table_name}
+                    ;
+                    CREATE OR REPLACE TABLE splitwise.{table_name} AS 
+                    (WITH ranked_records AS (
+                        SELECT
+                            *,
+                            ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) AS rn
+                        FROM
+                            newduckdb.splitwise.{table_name}
+                    )
+                    SELECT * EXCLUDE(rn) FROM ranked_records WHERE rn = 1 ORDER BY updated_at DESC)
+                    ;
+            """
             ).fetchdf()
-
+            
             connection.close()
 
             result = json.loads(result_df.to_json())
@@ -115,12 +121,13 @@ class DuckDB:
         except Exception as e:
             return {'status_code': HTTPStatus.BAD_REQUEST, 'message': f'Error executing query: {str(e)}'}
     
-    def export_table_to_csv(self, duckdb, schema_name: str, table_name: str):
+    def export_table_to_csv(self, wichduckdb, schema_name: str, table_name: str):
         try:
-            output_file = f'exports/{table_name}.csv'
-            if duckdb == 'new':
+            if wichduckdb == 'new':
+                output_file = f'exports/currents/{table_name}.csv'
                 connection = duckdb.connect('database/newduckdb.db')
             else:
+                output_file = f'exports/{table_name}.csv'
                 connection = duckdb.connect(self.db_path)
             connection.execute(f"COPY {schema_name}.{table_name} TO '{output_file}' WITH (FORMAT 'csv', HEADER TRUE)")
             connection.close()

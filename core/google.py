@@ -33,9 +33,9 @@ class Google:
         self.sender_email = os.getenv('GOOGLE_EMAIL_SENDER')
         self.sender_password = os.getenv('GOOGLE_PASSWORD_SENDER')
 
-    def save_sheet_as_seed(self, workbook_name, sheet_name):
+    def save_sheet_as_seed(self, workbook_name, sheet_name, path):
         try:
-            output_folder = pathlib.Path("dbt/splitwise_duckdb/seeds/")
+            output_folder = pathlib.Path(path)
             os.makedirs(output_folder, exist_ok=True)
 
             sheet = self.client.open(workbook_name).worksheet(sheet_name)

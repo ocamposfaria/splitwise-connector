@@ -13,6 +13,7 @@ WITH fundamental_changes AS (SELECT
 	e.cost,
 	e.created_at,
 	e.updated_at,
+	e.deleted_at,
 	e.details, 
 	e.group_id,
 	g.name as group_name
@@ -44,7 +45,13 @@ SELECT
 	cost,
 	created_at,
 	updated_at,
+	deleted_at,
 	group_id,
 	group_name
 FROM fundamental_changes
-WHERE month >= '2025-01'
+WHERE 	
+	CASE 
+		WHEN month IS NULL THEN substring(created_at, 1, 7)
+		ELSE month
+	END >= '2025-01'
+	AND deleted_at is NULL

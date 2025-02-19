@@ -216,9 +216,9 @@ def duckdb_ingestion(table_name, updated_after = (datetime.utcnow() - timedelta(
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.post("/export_table_to_csv", tags=["DuckDB"])
-def export_table_to_csv(schema_name, table_name):
+def export_table_to_csv(wichduckdb, schema_name, table_name):
     try:
-        response = duckdb_client.export_table_to_csv(schema_name=schema_name, table_name=table_name)
+        response = duckdb_client.export_table_to_csv(wichduckdb=wichduckdb, schema_name=schema_name, table_name=table_name)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -308,8 +308,6 @@ async def update_expenses_categories(request: UpdateExpensesRequest):
 
     for expense_id, new_category in request.expenses.items():
         expense = splitwise_client.get_expense(expense_id)['data']
-        from icecream import ic
-        ic(expense)
         description = expense['expense']['description']
 
         if re.search(r"\[.*?\]", description):
@@ -332,13 +330,18 @@ async def update_expenses_categories(request: UpdateExpensesRequest):
 
 
 @app.post("/save_all_my_sheets_as_seeds/", tags=["Batch"])
-async def save_all_my_sheets_as_seeds():
+async def save_all_my_sheets_as_seeds(version='new'):
 
-    responses = []
-    
-    for sheet in ['Ganhos', 'Limites', 'Presentes', 'Gastos futuros']:
-            response = google_client.save_sheet_as_seed('Suporte p orçamento', sheet)
-            responses.append(response)
+    if version == 'old':
+        responses = []
+        for sheet in ['Ganhos', 'Limites', 'Presentes', 'Gastos futuros']:
+                response = google_client.save_sheet_as_seed('Suporte p orçamento', sheet, path="dbt/splitwise_duckdb/seeds/")
+                responses.append(response)
+    if version == 'new':
+        responses = []
+        for sheet in ['Ganhos', 'Limites', 'Gastos futuros']:
+                response = google_client.save_sheet_as_seed('Extra Inputs', sheet, path="dbt_currents/splitwise_currents/seeds/")
+                responses.append(response)
     
     return responses
 
@@ -412,12 +415,15 @@ async def export_all_tables_to_csv(duckdb='old'):
             'overall_costs_future_estimated',
             'validate_percentages',
             'validate_bills']:
-            response = duckdb_client.export_table_to_csv(duckdb=duckdb, schema_name='main', table_name=table_name)
+            response = duckdb_client.export_table_to_csv(wichduckdb=duckdb, schema_name='main', table_name=table_name)
             responses.append(response)
     else:
         for table_name in [
-            'master']:
-            response = duckdb_client.export_table_to_csv(duckdb=duckdb, schema_name='main', table_name=table_name)
+            'master',
+            'master_limits',
+            'months',
+            'overall']:
+            response = duckdb_client.export_table_to_csv(wichduckdb=duckdb, schema_name='main', table_name=table_name)
             responses.append(response)
     
     return responses
@@ -461,7 +467,7 @@ async def correct_expenses_percentages(except_those: str = None):
 
     return {"status": 200, "update_results": update_results}
 
-@app.post("/refresh_splitwise_new_pipeline/", tags=["Batch NEW"])
+@app.post("/refresh_splitwise_new_pipeline/", tags=["Batch"])
 async def refresh_splitwise_new(updated_after = (datetime.utcnow() - timedelta(weeks=2)).strftime('%Y-%m-%dT%H:%M:%SZ')):
     """
     Atualiza Excel com dados do Splitwise.
@@ -485,6 +491,10 @@ async def refresh_splitwise_new(updated_after = (datetime.utcnow() - timedelta(w
             errors.append(f"Falha na ingestão de grupos no DuckDB: {error_message}")
         else:
             successes.append(response)
+
+    if not errors:
+        response = await save_all_my_sheets_as_seeds()
+        successes.append(response)
 
     if not errors:
         response = duckdb_client.run_dbt_command(project='new', command='dbt build')
