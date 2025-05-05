@@ -10,3 +10,6 @@ dbt/splitwise_duckdb/seeds/seed_ganhos.csv
 dbt/splitwise_duckdb/seeds/seed_gastos_futuros.csv
 dbt/splitwise_duckdb/seeds/seed_presentes.csv
 dbt/splitwise_duckdb/seeds/seed_limites.csv
+dbt_currents/splitwise_currents/seeds/seed_ganhos.csv
+dbt_currents/splitwise_currents/seeds/seed_gastos_futuros.csv
+dbt_currents/splitwise_currents/seeds/seed_limites.csv
