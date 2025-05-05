@@ -10,7 +10,7 @@ splitwise_client = Splitwise()
 
 class DuckDB:
     def __init__(self):
-        self.db_path = 'database/myduckdb.db'
+        self.db_path = 'database/newduckdb.db'
         self.create_database_if_not_exists()
 
     def create_database_if_not_exists(self):
@@ -71,7 +71,7 @@ class DuckDB:
             return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error in data ingestion: {str(e)}'}
 
     def duckdb_direct_ingestion(self, table_name, limit, updated_after, updated_before, dated_after, dated_before):
-        try:
+
             connection = duckdb.connect('database/newduckdb.db')
 
             if table_name == 'expenses':
@@ -88,6 +88,8 @@ class DuckDB:
                     CREATE SCHEMA IF NOT EXISTS splitwise
                     ;
                     CREATE OR REPLACE TABLE splitwise.tmp_{table_name} AS SELECT * FROM df_tmp
+                    ;
+                    CREATE TABLE IF NOT EXISTS splitwise.{table_name} AS SELECT * FROM splitwise.tmp_{table_name} 
                     ;
                     INSERT INTO newduckdb.splitwise.{table_name}
                     SELECT * FROM newduckdb.splitwise.tmp_{table_name}
@@ -110,8 +112,7 @@ class DuckDB:
             result = json.loads(result_df.to_json())
             return {'status_code': 200, 'message': 'Data ingestion successful.', 'data': result}
         
-        except Exception as e:
-            return {'status_code': HTTPStatus.INTERNAL_SERVER_ERROR, 'message': f'Error in data ingestion: {str(e)}'}
+
 
     def query_duckdb(self, sql_query: str):
         try:
