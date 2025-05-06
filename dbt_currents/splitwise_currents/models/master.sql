@@ -23,6 +23,7 @@ FROM
 FULL OUTER JOIN {{ source('splitwise', 'groups') }} g ON
 	e.group_id = g.id
 WHERE g.id = '35336773' -- just me
+	  OR g.id = '77867435' -- viagem lollapalooza -- vaigens aqui!
 )
 
 SELECT
@@ -31,18 +32,18 @@ SELECT
 		WHEN month IS NULL THEN substring(created_at, 1, 7)
 		ELSE month
 	END AS month,
-    CASE 
-        WHEN array_length(regexp_split_to_array(category, ' - ')) = 2 
-        	THEN regexp_split_to_array(category, ' - ')[1]
-        ELSE category
+	CASE 
+		WHEN array_length(regexp_split_to_array(category, ' - ')) = 2 
+			THEN regexp_split_to_array(category, ' - ')[1]
+		ELSE category
 	END AS category,
-    CASE 
-        WHEN array_length(regexp_split_to_array(category, ' - ')) = 2 
-        	THEN regexp_split_to_array(category, ' - ')[2]
-        ELSE NULL 
+	CASE 
+		WHEN array_length(regexp_split_to_array(category, ' - ')) = 2 
+			THEN regexp_split_to_array(category, ' - ')[2]
+		ELSE NULL 
 	END AS subcategory,
 	description,
-	cost,
+	CAST(cost AS DECIMAL) as cost,
 	created_at,
 	updated_at,
 	deleted_at,
@@ -55,3 +56,20 @@ WHERE
 		ELSE month
 	END >= '2025-01'
 	AND deleted_at is NULL
+
+UNION ALL 
+
+SELECT
+	NULL as expense_id,
+	month,
+	category,
+	NULL as subcategory,
+	name as description,
+	- CAST (cost AS DECIMAL) as cost,
+	NULL as created_at,
+	NULL as updated_at,
+	NULL as deleted_at,
+	NULL as group_id,
+	NULL as group_name
+FROM {{ref('seed_ganhos')}}
+WHERE month >= '2025-01'
