@@ -484,13 +484,13 @@ async def refresh_splitwise_new(updated_after = (datetime.utcnow() - timedelta(w
         else:
             successes.append(response)
     
-    if not errors:
-        response = duckdb_client.duckdb_direct_ingestion(table_name='groups', limit=1000, updated_after=updated_after, updated_before=None, dated_after=None, dated_before=None)
-        if response['status_code'] != 200:
-            error_message = response.get('message', 'Erro desconhecido.')
-            errors.append(f"Falha na ingestão de grupos no DuckDB: {error_message}")
-        else:
-            successes.append(response)
+    # if not errors:
+    #     response = duckdb_client.duckdb_direct_ingestion(table_name='groups', limit=1000, updated_after=updated_after, updated_before=None, dated_after=None, dated_before=None)
+    #     if response['status_code'] != 200:
+    #         error_message = response.get('message', 'Erro desconhecido.')
+    #         errors.append(f"Falha na ingestão de grupos no DuckDB: {error_message}")
+    #     else:
+    #         successes.append(response)
 
     if not errors:
         response = await save_all_my_sheets_as_seeds()

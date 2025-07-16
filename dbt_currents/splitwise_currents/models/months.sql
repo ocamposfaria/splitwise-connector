@@ -2,7 +2,7 @@ WITH
 
 years AS (
 SELECT cast(generate_series AS string) AS years
-FROM generate_series(2025, 2025)
+FROM generate_series(2025, 2026)
 ),
 
 months AS (

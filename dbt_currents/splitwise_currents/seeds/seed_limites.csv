@@ -1,8 +1,8 @@
 category,limit,limit_extra_week,version_month_from,version_month_to,detail
 rolês,1200,0,2025-01,2025-01,300 x 4 finais de semana
-transporte,750,0,2025-01,2200-12,gasolina (500) + seguro (200) + lavagem (50)
-bem-estar,750,0,2025-01,2200-12,aula de guitarra (300) + bluefit (140) + crossfit (150) + whey (150)
-outros,200,0,2025-01,2200-12,""
+transporte,1000,0,2025-01,2200-12,gasolina (750) + seguro (200) + lavagem (50)
+bem-estar,750,0,2025-01,2025-03,aula de guitarra (300) + bluefit (140) + crossfit (150) + whey (150)
+outros,400,0,2025-01,2200-12,""
 mercado,200,0,2025-01,2200-12,""
 assinaturas,100,0,2025-01,2200-12,icloud (15) + splitwise (10) + apple tv+ (22) + spotify (14) + google drive (8) + youtube premium (25)
 rolê 1,300,0,2025-02,2200-12,300
@@ -10,3 +10,5 @@ rolê 2,300,0,2025-02,2200-12,300
 rolê 3,300,0,2025-02,2200-12,300
 rolê 4,300,0,2025-02,2200-12,300
 rolê 5,0,0,2025-02,2200-12,100
+bem-estar,1200,0,2025-04,2025-06,aula de guitarra (300) + bluefit (140) + crossfit (150) + whey (150) + terapia (450)
+bem-estar,900,0,2025-07,2200-12,whey (150) + terapia (450) + gympass (300)
